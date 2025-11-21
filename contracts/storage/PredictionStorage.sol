@@ -6,6 +6,7 @@ import "../struct/CommonStruct.sol";
 import "../struct/PredictionStruct.sol";
 
 contract PredictionStorage {
+    uint256 public cacheTimeout = 600; // 10 minutes cache timeout for decrypted values
     uint16 public marketCount;
 
     mapping(uint16 => PredictionStruct.Market) public markets;

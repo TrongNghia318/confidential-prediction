@@ -8,74 +8,40 @@ import "../../storage/PredictionStorage.sol";
 
 /**
  * @title DecryptionCallbacks
- * @notice Simplified callback handler for decryption requests
- * @dev Uses client-side decryption approach
+ * @notice DEPRECATED in v0.9 - These callback functions are NO LONGER FUNCTIONAL
+ * @dev The v0.9 migration uses submitMyPredictionDecryption() instead.
+ * These functions are kept to satisfy the interface but will revert if called
+ * since FHE.requestDecryption() no longer exists in v0.9.
+ *
+ * v0.9 Self-Relaying Pattern:
+ * 1. Call requestMyPredictionDecryption() to mark value as publicly decryptable
+ * 2. Use frontend SDK's publicDecrypt() to get cleartext + proof
+ * 3. Call submitMyPredictionDecryption() with the cleartext and proof
  */
 abstract contract DecryptionCallbacks is PredictionStorage {
     uint256 constant CACHE_EXPIRATION = 10 minutes;
 
     /**
-     * @notice Callback for decrypting user prediction
-     * @dev Called after decryption is complete
+     * @notice DEPRECATED - Non-functional in v0.9
+     * @dev Use submitMyPredictionDecryption() instead
      */
     function callbackDecryptMyPrediction(
         uint256 requestId,
         bytes memory cleartext
     ) public {
-        PredictionStruct.DecryptPredictionRequest
-            memory request = decryptPredictionRequest[requestId];
-
-        bool prediction = EncryptedHelper.decodeBool(cleartext);
-
-        decryptedPredictions[request.marketId][
-            request.userAddress
-        ] = CommonStruct.BoolResultWithExp({
-            data: prediction,
-            exp: block.timestamp + CACHE_EXPIRATION
-        });
-
-        decryptPredictionStatus[request.marketId][
-            request.userAddress
-        ] = CommonStruct.DecryptStatus.DECRYPTED;
-
-        delete decryptPredictionRequest[requestId];
+        revert("DEPRECATED: Use submitMyPredictionDecryption");
+        // FHE.checkSignatures signature changed in v0.9 - old requestId pattern no longer supported
     }
 
     /**
-     * @notice Callback for decrypting total predictions count
-     * @dev Called after decryption is complete
+     * @notice DEPRECATED - Non-functional in v0.9
+     * @dev This callback pattern is no longer supported in v0.9
      */
     function callbackDecryptTotalPredictions(
         uint256 requestId,
         bytes memory cleartext
     ) public {
-        PredictionStruct.DecryptTotalRequest
-            memory request = decryptTotalRequest[requestId];
-
-        uint64 totalCount = EncryptedHelper.decodeUint64(cleartext);
-
-        if (request.isYesTotal) {
-            decryptedTotalYes[request.marketId] = CommonStruct
-                .Uint64ResultWithExp({
-                    data: totalCount,
-                    exp: block.timestamp + CACHE_EXPIRATION
-                });
-
-            decryptTotalYesStatus[request.marketId] = CommonStruct
-                .DecryptStatus
-                .DECRYPTED;
-        } else {
-            decryptedTotalNo[request.marketId] = CommonStruct
-                .Uint64ResultWithExp({
-                    data: totalCount,
-                    exp: block.timestamp + CACHE_EXPIRATION
-                });
-
-            decryptTotalNoStatus[request.marketId] = CommonStruct
-                .DecryptStatus
-                .DECRYPTED;
-        }
-
-        delete decryptTotalRequest[requestId];
+        revert("DEPRECATED: Use v0.9 self-relaying pattern");
+        // The old Oracle-based callback pattern is discontinued in v0.9
     }
 }

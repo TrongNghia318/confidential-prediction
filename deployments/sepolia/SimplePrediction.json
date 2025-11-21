@@ -1,0 +1,779 @@
+{
+  "address": "0xDD0FBE92aA3F0926C794a6e1C24c063d4786015B",
+  "abi": [
+    {
+      "inputs": [],
+      "name": "AlreadyCancelled",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "AlreadyPredicted",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "AlreadyResolved",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "EmptyQuestion",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "InvalidDeadline",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "InvalidReveal",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "MarketEnded",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "MarketNotExist",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "MarketNotResolved",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "MarketStillActive",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "NotPredicted",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "OnlyCreator",
+      "type": "error"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint16",
+          "name": "marketId",
+          "type": "uint16"
+        }
+      ],
+      "name": "MarketCancelled",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint16",
+          "name": "marketId",
+          "type": "uint16"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "creator",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "question",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "deadline",
+          "type": "uint256"
+        }
+      ],
+      "name": "MarketCreated",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint16",
+          "name": "marketId",
+          "type": "uint16"
+        },
+        {
+          "indexed": false,
+          "internalType": "enum SimplePrediction.Outcome",
+          "name": "outcome",
+          "type": "uint8"
+        }
+      ],
+      "name": "MarketResolved",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint16",
+          "name": "marketId",
+          "type": "uint16"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "user",
+          "type": "address"
+        }
+      ],
+      "name": "PredictionMade",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint16",
+          "name": "marketId",
+          "type": "uint16"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "user",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "bool",
+          "name": "prediction",
+          "type": "bool"
+        }
+      ],
+      "name": "PredictionRevealed",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint16",
+          "name": "marketId",
+          "type": "uint16"
+        }
+      ],
+      "name": "cancelMarket",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint16",
+          "name": "marketId",
+          "type": "uint16"
+        },
+        {
+          "internalType": "address",
+          "name": "user",
+          "type": "address"
+        }
+      ],
+      "name": "checkHasPrediction",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint16",
+          "name": "marketId",
+          "type": "uint16"
+        },
+        {
+          "internalType": "address",
+          "name": "user",
+          "type": "address"
+        }
+      ],
+      "name": "checkHasRevealed",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "question",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "description",
+          "type": "string"
+        },
+        {
+          "internalType": "uint256",
+          "name": "duration",
+          "type": "uint256"
+        }
+      ],
+      "name": "createMarket",
+      "outputs": [
+        {
+          "internalType": "uint16",
+          "name": "",
+          "type": "uint16"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint16",
+          "name": "marketId",
+          "type": "uint16"
+        }
+      ],
+      "name": "getMarket",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "creator",
+          "type": "address"
+        },
+        {
+          "internalType": "string",
+          "name": "question",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "description",
+          "type": "string"
+        },
+        {
+          "internalType": "uint256",
+          "name": "deadline",
+          "type": "uint256"
+        },
+        {
+          "internalType": "enum SimplePrediction.Outcome",
+          "name": "outcome",
+          "type": "uint8"
+        },
+        {
+          "internalType": "bool",
+          "name": "resolved",
+          "type": "bool"
+        },
+        {
+          "internalType": "uint256",
+          "name": "totalPredictors",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint16",
+          "name": "marketId",
+          "type": "uint16"
+        }
+      ],
+      "name": "getMyPrediction",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "prediction",
+          "type": "bool"
+        },
+        {
+          "internalType": "bool",
+          "name": "wasCorrect",
+          "type": "bool"
+        },
+        {
+          "internalType": "bool",
+          "name": "isResolved",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint16",
+          "name": "",
+          "type": "uint16"
+        },
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "hasPredicted",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint16",
+          "name": "",
+          "type": "uint16"
+        },
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "hasRevealed",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "marketCount",
+      "outputs": [
+        {
+          "internalType": "uint16",
+          "name": "",
+          "type": "uint16"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint16",
+          "name": "",
+          "type": "uint16"
+        }
+      ],
+      "name": "markets",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "creator",
+          "type": "address"
+        },
+        {
+          "internalType": "string",
+          "name": "question",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "description",
+          "type": "string"
+        },
+        {
+          "internalType": "uint256",
+          "name": "deadline",
+          "type": "uint256"
+        },
+        {
+          "internalType": "enum SimplePrediction.Outcome",
+          "name": "outcome",
+          "type": "uint8"
+        },
+        {
+          "internalType": "bool",
+          "name": "resolved",
+          "type": "bool"
+        },
+        {
+          "internalType": "uint256",
+          "name": "totalPredictors",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint16",
+          "name": "marketId",
+          "type": "uint16"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "predictionHash",
+          "type": "bytes32"
+        }
+      ],
+      "name": "predict",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint16",
+          "name": "",
+          "type": "uint16"
+        },
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "predictionHashes",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint16",
+          "name": "marketId",
+          "type": "uint16"
+        },
+        {
+          "internalType": "enum SimplePrediction.Outcome",
+          "name": "outcome",
+          "type": "uint8"
+        }
+      ],
+      "name": "resolveMarket",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint16",
+          "name": "marketId",
+          "type": "uint16"
+        },
+        {
+          "internalType": "bool",
+          "name": "prediction",
+          "type": "bool"
+        },
+        {
+          "internalType": "string",
+          "name": "salt",
+          "type": "string"
+        }
+      ],
+      "name": "revealPrediction",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint16",
+          "name": "",
+          "type": "uint16"
+        },
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "revealedPredictions",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "transactionHash": "0xb92f6d0a78caf39eb289df21f6ca3fa4773e82479ec84f55feb1bad6925e911d",
+  "receipt": {
+    "to": null,
+    "from": "0x1b66CEA12f45794e8454F3a1A30dDBF03f377519",
+    "contractAddress": "0xDD0FBE92aA3F0926C794a6e1C24c063d4786015B",
+    "transactionIndex": 74,
+    "gasUsed": "949478",
+    "logsBloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "blockHash": "0x1944a790751053533a449957753e0e498b4729553b67e3a57d1a8d5126a3408e",
+    "transactionHash": "0xb92f6d0a78caf39eb289df21f6ca3fa4773e82479ec84f55feb1bad6925e911d",
+    "logs": [],
+    "blockNumber": 9669332,
+    "cumulativeGasUsed": "7642798",
+    "status": 1,
+    "byzantium": true
+  },
+  "args": [],
+  "numDeployments": 1,
+  "solcInputHash": "98d048ed9b058c277998f08753d3c262",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.24+commit.e11b9ed9\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"AlreadyCancelled\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"AlreadyPredicted\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"AlreadyResolved\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"EmptyQuestion\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"InvalidDeadline\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"InvalidReveal\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"MarketEnded\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"MarketNotExist\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"MarketNotResolved\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"MarketStillActive\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"NotPredicted\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"OnlyCreator\",\"type\":\"error\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint16\",\"name\":\"marketId\",\"type\":\"uint16\"}],\"name\":\"MarketCancelled\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint16\",\"name\":\"marketId\",\"type\":\"uint16\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"creator\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"question\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"deadline\",\"type\":\"uint256\"}],\"name\":\"MarketCreated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint16\",\"name\":\"marketId\",\"type\":\"uint16\"},{\"indexed\":false,\"internalType\":\"enum SimplePrediction.Outcome\",\"name\":\"outcome\",\"type\":\"uint8\"}],\"name\":\"MarketResolved\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint16\",\"name\":\"marketId\",\"type\":\"uint16\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"}],\"name\":\"PredictionMade\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint16\",\"name\":\"marketId\",\"type\":\"uint16\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"bool\",\"name\":\"prediction\",\"type\":\"bool\"}],\"name\":\"PredictionRevealed\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"uint16\",\"name\":\"marketId\",\"type\":\"uint16\"}],\"name\":\"cancelMarket\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint16\",\"name\":\"marketId\",\"type\":\"uint16\"},{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"}],\"name\":\"checkHasPrediction\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint16\",\"name\":\"marketId\",\"type\":\"uint16\"},{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"}],\"name\":\"checkHasRevealed\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"question\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"description\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"duration\",\"type\":\"uint256\"}],\"name\":\"createMarket\",\"outputs\":[{\"internalType\":\"uint16\",\"name\":\"\",\"type\":\"uint16\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint16\",\"name\":\"marketId\",\"type\":\"uint16\"}],\"name\":\"getMarket\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"creator\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"question\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"description\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"deadline\",\"type\":\"uint256\"},{\"internalType\":\"enum SimplePrediction.Outcome\",\"name\":\"outcome\",\"type\":\"uint8\"},{\"internalType\":\"bool\",\"name\":\"resolved\",\"type\":\"bool\"},{\"internalType\":\"uint256\",\"name\":\"totalPredictors\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint16\",\"name\":\"marketId\",\"type\":\"uint16\"}],\"name\":\"getMyPrediction\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"prediction\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"wasCorrect\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"isResolved\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint16\",\"name\":\"\",\"type\":\"uint16\"},{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"name\":\"hasPredicted\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint16\",\"name\":\"\",\"type\":\"uint16\"},{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"name\":\"hasRevealed\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"marketCount\",\"outputs\":[{\"internalType\":\"uint16\",\"name\":\"\",\"type\":\"uint16\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint16\",\"name\":\"\",\"type\":\"uint16\"}],\"name\":\"markets\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"creator\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"question\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"description\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"deadline\",\"type\":\"uint256\"},{\"internalType\":\"enum SimplePrediction.Outcome\",\"name\":\"outcome\",\"type\":\"uint8\"},{\"internalType\":\"bool\",\"name\":\"resolved\",\"type\":\"bool\"},{\"internalType\":\"uint256\",\"name\":\"totalPredictors\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint16\",\"name\":\"marketId\",\"type\":\"uint16\"},{\"internalType\":\"bytes32\",\"name\":\"predictionHash\",\"type\":\"bytes32\"}],\"name\":\"predict\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint16\",\"name\":\"\",\"type\":\"uint16\"},{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"name\":\"predictionHashes\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint16\",\"name\":\"marketId\",\"type\":\"uint16\"},{\"internalType\":\"enum SimplePrediction.Outcome\",\"name\":\"outcome\",\"type\":\"uint8\"}],\"name\":\"resolveMarket\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint16\",\"name\":\"marketId\",\"type\":\"uint16\"},{\"internalType\":\"bool\",\"name\":\"prediction\",\"type\":\"bool\"},{\"internalType\":\"string\",\"name\":\"salt\",\"type\":\"string\"}],\"name\":\"revealPrediction\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint16\",\"name\":\"\",\"type\":\"uint16\"},{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"name\":\"revealedPredictions\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"details\":\"This version uses hash-based privacy instead of FHE for easier testing\",\"kind\":\"dev\",\"methods\":{},\"title\":\"SimplePrediction\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"notice\":\"Simplified prediction market for testing without FHEVM\",\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/SimplePrediction.sol\":\"SimplePrediction\"},\"evmVersion\":\"cancun\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\",\"useLiteralContent\":true},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[],\"viaIR\":true},\"sources\":{\"contracts/SimplePrediction.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\npragma solidity ^0.8.24;\\n\\n/**\\n * @title SimplePrediction\\n * @notice Simplified prediction market for testing without FHEVM\\n * @dev This version uses hash-based privacy instead of FHE for easier testing\\n */\\ncontract SimplePrediction {\\n    enum Outcome {\\n        PENDING,\\n        YES,\\n        NO,\\n        CANCELLED\\n    }\\n\\n    struct Market {\\n        address creator;\\n        string question;\\n        string description;\\n        uint256 deadline;\\n        Outcome outcome;\\n        bool resolved;\\n        uint256 totalPredictors;\\n    }\\n\\n    uint16 public marketCount;\\n    mapping(uint16 => Market) public markets;\\n\\n    // Hash of user predictions (keccak256 of user address + prediction + salt)\\n    mapping(uint16 => mapping(address => bytes32)) public predictionHashes;\\n\\n    // Revealed predictions after resolution\\n    mapping(uint16 => mapping(address => bool)) public revealedPredictions;\\n    mapping(uint16 => mapping(address => bool)) public hasRevealed;\\n    mapping(uint16 => mapping(address => bool)) public hasPredicted;\\n\\n    event MarketCreated(uint16 indexed marketId, address indexed creator, string question, uint256 deadline);\\n    event PredictionMade(uint16 indexed marketId, address indexed user);\\n    event MarketResolved(uint16 indexed marketId, Outcome outcome);\\n    event PredictionRevealed(uint16 indexed marketId, address indexed user, bool prediction);\\n    event MarketCancelled(uint16 indexed marketId);\\n\\n    error OnlyCreator();\\n    error InvalidDeadline();\\n    error EmptyQuestion();\\n    error MarketNotExist();\\n    error MarketEnded();\\n    error MarketStillActive();\\n    error AlreadyResolved();\\n    error AlreadyCancelled();\\n    error AlreadyPredicted();\\n    error MarketNotResolved();\\n    error InvalidReveal();\\n    error NotPredicted();\\n\\n    modifier onlyCreator(uint16 marketId) {\\n        if (msg.sender != markets[marketId].creator) revert OnlyCreator();\\n        _;\\n    }\\n\\n    function createMarket(\\n        string calldata question,\\n        string calldata description,\\n        uint256 duration\\n    ) external returns (uint16) {\\n        if (duration == 0) revert InvalidDeadline();\\n        if (bytes(question).length == 0) revert EmptyQuestion();\\n\\n        uint16 marketId = marketCount++;\\n\\n        markets[marketId] = Market({\\n            creator: msg.sender,\\n            question: question,\\n            description: description,\\n            deadline: block.timestamp + duration,\\n            outcome: Outcome.PENDING,\\n            resolved: false,\\n            totalPredictors: 0\\n        });\\n\\n        emit MarketCreated(marketId, msg.sender, question, block.timestamp + duration);\\n        return marketId;\\n    }\\n\\n    function predict(uint16 marketId, bytes32 predictionHash) external {\\n        if (marketId >= marketCount) revert MarketNotExist();\\n\\n        Market storage market = markets[marketId];\\n        if (block.timestamp > market.deadline) revert MarketEnded();\\n        if (market.resolved) revert AlreadyResolved();\\n        if (market.outcome == Outcome.CANCELLED) revert AlreadyCancelled();\\n        if (hasPredicted[marketId][msg.sender]) revert AlreadyPredicted();\\n\\n        predictionHashes[marketId][msg.sender] = predictionHash;\\n        hasPredicted[marketId][msg.sender] = true;\\n        market.totalPredictors++;\\n\\n        emit PredictionMade(marketId, msg.sender);\\n    }\\n\\n    function revealPrediction(uint16 marketId, bool prediction, string calldata salt) external {\\n        if (marketId >= marketCount) revert MarketNotExist();\\n        if (!hasPredicted[marketId][msg.sender]) revert NotPredicted();\\n\\n        bytes32 computedHash = keccak256(abi.encodePacked(msg.sender, prediction, salt));\\n        if (computedHash != predictionHashes[marketId][msg.sender]) revert InvalidReveal();\\n\\n        revealedPredictions[marketId][msg.sender] = prediction;\\n        hasRevealed[marketId][msg.sender] = true;\\n\\n        emit PredictionRevealed(marketId, msg.sender, prediction);\\n    }\\n\\n    function resolveMarket(uint16 marketId, Outcome outcome) external onlyCreator(marketId) {\\n        if (marketId >= marketCount) revert MarketNotExist();\\n\\n        Market storage market = markets[marketId];\\n        if (block.timestamp < market.deadline) revert MarketStillActive();\\n        if (market.resolved) revert AlreadyResolved();\\n        if (market.outcome == Outcome.CANCELLED) revert AlreadyCancelled();\\n        if (outcome != Outcome.YES && outcome != Outcome.NO) revert InvalidDeadline();\\n\\n        market.outcome = outcome;\\n        market.resolved = true;\\n\\n        emit MarketResolved(marketId, outcome);\\n    }\\n\\n    function cancelMarket(uint16 marketId) external onlyCreator(marketId) {\\n        if (marketId >= marketCount) revert MarketNotExist();\\n\\n        Market storage market = markets[marketId];\\n        if (market.resolved) revert AlreadyResolved();\\n        if (market.outcome == Outcome.CANCELLED) revert AlreadyCancelled();\\n\\n        market.outcome = Outcome.CANCELLED;\\n\\n        emit MarketCancelled(marketId);\\n    }\\n\\n    function getMarket(uint16 marketId) external view returns (\\n        address creator,\\n        string memory question,\\n        string memory description,\\n        uint256 deadline,\\n        Outcome outcome,\\n        bool resolved,\\n        uint256 totalPredictors\\n    ) {\\n        if (marketId >= marketCount) revert MarketNotExist();\\n        Market memory market = markets[marketId];\\n\\n        return (\\n            market.creator,\\n            market.question,\\n            market.description,\\n            market.deadline,\\n            market.outcome,\\n            market.resolved,\\n            market.totalPredictors\\n        );\\n    }\\n\\n    function getMyPrediction(uint16 marketId) external view returns (\\n        bool prediction,\\n        bool wasCorrect,\\n        bool isResolved\\n    ) {\\n        if (!hasRevealed[marketId][msg.sender]) revert NotPredicted();\\n\\n        Market memory market = markets[marketId];\\n        prediction = revealedPredictions[marketId][msg.sender];\\n        isResolved = market.resolved;\\n\\n        if (isResolved) {\\n            bool actualOutcome = (market.outcome == Outcome.YES);\\n            wasCorrect = (prediction == actualOutcome);\\n        }\\n\\n        return (prediction, wasCorrect, isResolved);\\n    }\\n\\n    function checkHasPrediction(uint16 marketId, address user) external view returns (bool) {\\n        return hasPredicted[marketId][user];\\n    }\\n\\n    function checkHasRevealed(uint16 marketId, address user) external view returns (bool) {\\n        return hasRevealed[marketId][user];\\n    }\\n}\\n\",\"keccak256\":\"0x98c72cd486122e36ceb265ad4d6ea7e893865964ad9610e061083a7a54881bfd\",\"license\":\"MIT\"}},\"version\":1}",
+  "bytecode": "0x6080806040523461001657611030908161001b8239f35b5f80fdfe6080806040526004361015610012575f80fd5b5f3560e01c9081631103eb1d14610d1a5750806313a3001314610c375780631d502403146105235780632594028314610b30578063284f430214610ab557806334d2c4eb14610a75578063367dc95a14610929578063436929b8146108e957806384090235146108ae57806386a985d114610798578063a788a9c314610673578063e72dd6e014610583578063ec97908214610563578063ef9cce66146105235763f98b7783146100c1575f80fd5b3461051f57606036600319011261051f5760043567ffffffffffffffff811161051f576100f2903690600401610f55565b60243567ffffffffffffffff811161051f57610112903690600401610f55565b90926044351561050d5782156104fb575f549261ffff9283808616146104e75761ffff1985168585166001018516175f5561014f60443542610fa7565b61017c6040519761015f89610e75565b33895261016d368688610fb4565b9360208a019485523691610fb4565b604088015260608701525f60808701525f60a08701525f60c08701528385165f52600160205260405f209060018060a01b038751166bffffffffffffffffffffffff60a01b8354161782555180519067ffffffffffffffff821161040d5781906101e96001850154610e3d565b601f8111610497575b50602090601f831160011461042c575f92610421575b50508160011b915f199060031b1c19161760018201555b604086015180519067ffffffffffffffff821161040d5781906102456002850154610e3d565b601f81116103bd575b50602090601f8311600114610352575f92610347575b50508160011b915f199060031b1c19161760028201555b60608601516003820155600481016080870151600481101561033357602097826102a960c093600595610f8f565b60a0820151815461ff00191690151560081b61ff001617905501519101556102d360443542610fa7565b81604051936040855281604086015260608501375f60608385010152858301527f8639fc6e9e1f1b60219dd65bc5a4f1d1b509e38247690473d6a68aa245de7434339260608186881694601f80199101168101030190a360405191168152f35b634e487b7160e01b5f52602160045260245ffd5b015190505f80610264565b600285015f908152602081209350601f198516905b8181106103a5575090846001959493921061038d575b505050811b01600282015561027b565b01515f1960f88460031b161c191690555f808061037d565b92936020600181928786015181550195019301610367565b909150600284015f5260205f20601f840160051c810160208510610406575b90849392915b601f830160051c820181106103f857505061024e565b5f81558594506001016103e2565b50806103dc565b634e487b7160e01b5f52604160045260245ffd5b015190505f80610208565b600185015f908152602081209350601f198516905b81811061047f5750908460019594939210610467575b505050811b01600182015561021f565b01515f1960f88460031b161c191690555f8080610457565b92936020600181928786015181550195019301610441565b909150600184015f5260205f20601f840160051c8101602085106104e0575b90849392915b601f830160051c820181106104d25750506101f2565b5f81558594506001016104bc565b50806104b6565b634e487b7160e01b5f52601160045260245ffd5b604051630d5003f360e01b8152600490fd5b604051631da7447960e21b8152600490fd5b5f80fd5b3461051f5761ffff61053436610d69565b91165f52600460205260405f209060018060a01b03165f52602052602060ff60405f2054166040519015158152f35b3461051f575f36600319011261051f57602061ffff5f5416604051908152f35b3461051f57602036600319011261051f5761059c610d58565b61ffff9081165f818152600160205260409020549091906001600160a01b03163303610661575f541681101561064f57805f526001602052600460405f2001805460ff8160081c1661063d5760ff811660048110156103335760031461062b5760ff191660031790557f351495dc86b664fd30fbbfb1906da5764cc5c13d7c982222afbeb28e47c2fec35f80a2005b6040516354e3762560e01b8152600490fd5b6040516336ab81e160e11b8152600490fd5b60405163187a6c6560e21b8152600490fd5b6040516308f78f9960e31b8152600490fd5b3461051f5760208060031936011261051f5761068d610d58565b61ffff165f818152600483526040808220338352845281205460ff161561078657815f526001835260405f2092604051926106c784610e75565b84546001600160a01b031684526106e060018601610eb3565b828501526106f060028601610eb3565b60408501526003850154606085015260048501549360c06005608083019761071b60ff89168a610f83565b60ff60a085019860081c161515885201549101525f526003815260405f20335f52815260ff60405f20541692511515918261076a575b6060945060405193151584521515908301526040820152f35b5092519260048410156103335760016060941483151514610751565b60405163bda65b2960e01b8152600490fd5b3461051f57604036600319011261051f576107b1610d58565b61ffff805f541691169081101561064f57805f5260206001815260405f206003810154421161089c57600481015460ff8160081c1661063d5760ff1660048110156103335760031461062b57825f526005825260405f20335f52825260ff60405f20541661088a57600591835f526002815260405f20335f52815260243560405f2055835f5282815260405f2090335f525260405f20600160ff198254161790550180545f1981146104e757600101905533907f2aa00678fda6cafde3c77730af42ead850584a5589db49850fe7d69eca9a76f75f80a3005b604051633b9e91cf60e01b8152600490fd5b60405163262b753160e21b8152600490fd5b3461051f5761ffff6108bf36610d69565b91165f52600260205260405f209060018060a01b03165f52602052602060405f2054604051908152f35b3461051f5761ffff6108fa36610d69565b91165f52600360205260405f209060018060a01b03165f52602052602060ff60405f2054166040519015158152f35b3461051f57606036600319011261051f57610942610d58565b6024359081151580920361051f5760443567ffffffffffffffff811161051f57610970903690600401610f55565b9061ffff805f541693169283101561064f57825f526020916005835260405f20335f52835260ff60405f20541615610786576109d96035604051838194878301963360601b88528a60f81b60348501528484013781015f83820152036015810184520182610e91565b519020825f526002825260405f20335f52825260405f205403610a63577fe54df7ed37520f8a9fdf10682aa3f3d54918ad18050223ec5d826582a670bfc990825f526003815260405f20335f52815260405f2060ff19908181541660ff8716179055835f526004825260405f20335f528252600160405f20918254161790556040519384523393a3005b604051639ea6d12760e01b8152600490fd5b3461051f5761ffff610a8636610d69565b91165f52600560205260405f209060018060a01b03165f52602052602060ff60405f2054166040519015158152f35b3461051f57602036600319011261051f5761ffff610ad1610d58565b165f52600160205260405f2060018060a01b03815416610b2c610af660018401610eb3565b91610b0360028501610eb3565b93600381015491600560048301549201549260405196879660ff808660081c1695169388610de5565b0390f35b3461051f57604036600319011261051f57610b49610d58565b602435600481101561051f5761ffff9182165f818152600160205260409020549092906001600160a01b03163303610661575f541682101561064f57815f52600160205260405f2060038101544210610c2557600401805460ff8160081c1661063d5760ff1660048110156103335760031461062b57600182141580610c1a575b61050d578181610bfd7fa0a9e4d40bc9d2ad49adfb58b4b106209ffd8f39e7ddb74175a984466fb908b194602094610f8f565b61010061ff0019825416179055610c176040518092610dd8565ba2005b506002821415610bca565b604051636e73cfb560e01b8152600490fd5b3461051f57602036600319011261051f57610c50610d58565b61ffff805f541691169081101561064f575f52600160205260405f2060405190610c7982610e75565b80546001600160a01b039081168352610c9460018301610eb3565b9160208401928352610ca860028201610eb3565b93604081019485526003820154916060820192835260048101549360056080840192610cd760ff881685610f83565b60ff60a086019760081c161515875201549260c081019384525116945195519251905190600482101561033357610b2c9451151592519360405197889788610de5565b3461051f5760209061ffff610d2e36610d69565b91165f9081526005845260408082206001600160a01b039093168252918452205460ff1615158152f35b6004359061ffff8216820361051f57565b604090600319011261051f5760043561ffff8116810361051f57906024356001600160a01b038116810361051f5790565b91908251928382525f5b848110610dc4575050825f602080949584010152601f8019910116010190565b602081830181015184830182015201610da4565b9060048210156103335752565b9397969592610e2290610e14610e329460c0989460018060a01b0316885260e0602089015260e0880190610d9a565b908682036040880152610d9a565b9760608501526080840190610dd8565b151560a08201520152565b90600182811c92168015610e6b575b6020831014610e5757565b634e487b7160e01b5f52602260045260245ffd5b91607f1691610e4c565b60e0810190811067ffffffffffffffff82111761040d57604052565b90601f8019910116810190811067ffffffffffffffff82111761040d57604052565b9060405191825f8254610ec581610e3d565b908184526020946001916001811690815f14610f335750600114610ef5575b505050610ef392500383610e91565b565b5f90815285812095935091905b818310610f1b575050610ef393508201015f8080610ee4565b85548884018501529485019487945091830191610f02565b92505050610ef394925060ff191682840152151560051b8201015f8080610ee4565b9181601f8401121561051f5782359167ffffffffffffffff831161051f576020838186019501011161051f57565b60048210156103335752565b9060048110156103335760ff80198354169116179055565b919082018092116104e757565b92919267ffffffffffffffff821161040d5760405191610fde601f8201601f191660200184610e91565b82948184528183011161051f578281602093845f96013701015256fea26469706673582212208cb45f30bf1d3bbb429ba293952ace8fc47871271cce78fcb2d7f51f3c7e579c64736f6c63430008180033",
+  "deployedBytecode": "0x6080806040526004361015610012575f80fd5b5f3560e01c9081631103eb1d14610d1a5750806313a3001314610c375780631d502403146105235780632594028314610b30578063284f430214610ab557806334d2c4eb14610a75578063367dc95a14610929578063436929b8146108e957806384090235146108ae57806386a985d114610798578063a788a9c314610673578063e72dd6e014610583578063ec97908214610563578063ef9cce66146105235763f98b7783146100c1575f80fd5b3461051f57606036600319011261051f5760043567ffffffffffffffff811161051f576100f2903690600401610f55565b60243567ffffffffffffffff811161051f57610112903690600401610f55565b90926044351561050d5782156104fb575f549261ffff9283808616146104e75761ffff1985168585166001018516175f5561014f60443542610fa7565b61017c6040519761015f89610e75565b33895261016d368688610fb4565b9360208a019485523691610fb4565b604088015260608701525f60808701525f60a08701525f60c08701528385165f52600160205260405f209060018060a01b038751166bffffffffffffffffffffffff60a01b8354161782555180519067ffffffffffffffff821161040d5781906101e96001850154610e3d565b601f8111610497575b50602090601f831160011461042c575f92610421575b50508160011b915f199060031b1c19161760018201555b604086015180519067ffffffffffffffff821161040d5781906102456002850154610e3d565b601f81116103bd575b50602090601f8311600114610352575f92610347575b50508160011b915f199060031b1c19161760028201555b60608601516003820155600481016080870151600481101561033357602097826102a960c093600595610f8f565b60a0820151815461ff00191690151560081b61ff001617905501519101556102d360443542610fa7565b81604051936040855281604086015260608501375f60608385010152858301527f8639fc6e9e1f1b60219dd65bc5a4f1d1b509e38247690473d6a68aa245de7434339260608186881694601f80199101168101030190a360405191168152f35b634e487b7160e01b5f52602160045260245ffd5b015190505f80610264565b600285015f908152602081209350601f198516905b8181106103a5575090846001959493921061038d575b505050811b01600282015561027b565b01515f1960f88460031b161c191690555f808061037d565b92936020600181928786015181550195019301610367565b909150600284015f5260205f20601f840160051c810160208510610406575b90849392915b601f830160051c820181106103f857505061024e565b5f81558594506001016103e2565b50806103dc565b634e487b7160e01b5f52604160045260245ffd5b015190505f80610208565b600185015f908152602081209350601f198516905b81811061047f5750908460019594939210610467575b505050811b01600182015561021f565b01515f1960f88460031b161c191690555f8080610457565b92936020600181928786015181550195019301610441565b909150600184015f5260205f20601f840160051c8101602085106104e0575b90849392915b601f830160051c820181106104d25750506101f2565b5f81558594506001016104bc565b50806104b6565b634e487b7160e01b5f52601160045260245ffd5b604051630d5003f360e01b8152600490fd5b604051631da7447960e21b8152600490fd5b5f80fd5b3461051f5761ffff61053436610d69565b91165f52600460205260405f209060018060a01b03165f52602052602060ff60405f2054166040519015158152f35b3461051f575f36600319011261051f57602061ffff5f5416604051908152f35b3461051f57602036600319011261051f5761059c610d58565b61ffff9081165f818152600160205260409020549091906001600160a01b03163303610661575f541681101561064f57805f526001602052600460405f2001805460ff8160081c1661063d5760ff811660048110156103335760031461062b5760ff191660031790557f351495dc86b664fd30fbbfb1906da5764cc5c13d7c982222afbeb28e47c2fec35f80a2005b6040516354e3762560e01b8152600490fd5b6040516336ab81e160e11b8152600490fd5b60405163187a6c6560e21b8152600490fd5b6040516308f78f9960e31b8152600490fd5b3461051f5760208060031936011261051f5761068d610d58565b61ffff165f818152600483526040808220338352845281205460ff161561078657815f526001835260405f2092604051926106c784610e75565b84546001600160a01b031684526106e060018601610eb3565b828501526106f060028601610eb3565b60408501526003850154606085015260048501549360c06005608083019761071b60ff89168a610f83565b60ff60a085019860081c161515885201549101525f526003815260405f20335f52815260ff60405f20541692511515918261076a575b6060945060405193151584521515908301526040820152f35b5092519260048410156103335760016060941483151514610751565b60405163bda65b2960e01b8152600490fd5b3461051f57604036600319011261051f576107b1610d58565b61ffff805f541691169081101561064f57805f5260206001815260405f206003810154421161089c57600481015460ff8160081c1661063d5760ff1660048110156103335760031461062b57825f526005825260405f20335f52825260ff60405f20541661088a57600591835f526002815260405f20335f52815260243560405f2055835f5282815260405f2090335f525260405f20600160ff198254161790550180545f1981146104e757600101905533907f2aa00678fda6cafde3c77730af42ead850584a5589db49850fe7d69eca9a76f75f80a3005b604051633b9e91cf60e01b8152600490fd5b60405163262b753160e21b8152600490fd5b3461051f5761ffff6108bf36610d69565b91165f52600260205260405f209060018060a01b03165f52602052602060405f2054604051908152f35b3461051f5761ffff6108fa36610d69565b91165f52600360205260405f209060018060a01b03165f52602052602060ff60405f2054166040519015158152f35b3461051f57606036600319011261051f57610942610d58565b6024359081151580920361051f5760443567ffffffffffffffff811161051f57610970903690600401610f55565b9061ffff805f541693169283101561064f57825f526020916005835260405f20335f52835260ff60405f20541615610786576109d96035604051838194878301963360601b88528a60f81b60348501528484013781015f83820152036015810184520182610e91565b519020825f526002825260405f20335f52825260405f205403610a63577fe54df7ed37520f8a9fdf10682aa3f3d54918ad18050223ec5d826582a670bfc990825f526003815260405f20335f52815260405f2060ff19908181541660ff8716179055835f526004825260405f20335f528252600160405f20918254161790556040519384523393a3005b604051639ea6d12760e01b8152600490fd5b3461051f5761ffff610a8636610d69565b91165f52600560205260405f209060018060a01b03165f52602052602060ff60405f2054166040519015158152f35b3461051f57602036600319011261051f5761ffff610ad1610d58565b165f52600160205260405f2060018060a01b03815416610b2c610af660018401610eb3565b91610b0360028501610eb3565b93600381015491600560048301549201549260405196879660ff808660081c1695169388610de5565b0390f35b3461051f57604036600319011261051f57610b49610d58565b602435600481101561051f5761ffff9182165f818152600160205260409020549092906001600160a01b03163303610661575f541682101561064f57815f52600160205260405f2060038101544210610c2557600401805460ff8160081c1661063d5760ff1660048110156103335760031461062b57600182141580610c1a575b61050d578181610bfd7fa0a9e4d40bc9d2ad49adfb58b4b106209ffd8f39e7ddb74175a984466fb908b194602094610f8f565b61010061ff0019825416179055610c176040518092610dd8565ba2005b506002821415610bca565b604051636e73cfb560e01b8152600490fd5b3461051f57602036600319011261051f57610c50610d58565b61ffff805f541691169081101561064f575f52600160205260405f2060405190610c7982610e75565b80546001600160a01b039081168352610c9460018301610eb3565b9160208401928352610ca860028201610eb3565b93604081019485526003820154916060820192835260048101549360056080840192610cd760ff881685610f83565b60ff60a086019760081c161515875201549260c081019384525116945195519251905190600482101561033357610b2c9451151592519360405197889788610de5565b3461051f5760209061ffff610d2e36610d69565b91165f9081526005845260408082206001600160a01b039093168252918452205460ff1615158152f35b6004359061ffff8216820361051f57565b604090600319011261051f5760043561ffff8116810361051f57906024356001600160a01b038116810361051f5790565b91908251928382525f5b848110610dc4575050825f602080949584010152601f8019910116010190565b602081830181015184830182015201610da4565b9060048210156103335752565b9397969592610e2290610e14610e329460c0989460018060a01b0316885260e0602089015260e0880190610d9a565b908682036040880152610d9a565b9760608501526080840190610dd8565b151560a08201520152565b90600182811c92168015610e6b575b6020831014610e5757565b634e487b7160e01b5f52602260045260245ffd5b91607f1691610e4c565b60e0810190811067ffffffffffffffff82111761040d57604052565b90601f8019910116810190811067ffffffffffffffff82111761040d57604052565b9060405191825f8254610ec581610e3d565b908184526020946001916001811690815f14610f335750600114610ef5575b505050610ef392500383610e91565b565b5f90815285812095935091905b818310610f1b575050610ef393508201015f8080610ee4565b85548884018501529485019487945091830191610f02565b92505050610ef394925060ff191682840152151560051b8201015f8080610ee4565b9181601f8401121561051f5782359167ffffffffffffffff831161051f576020838186019501011161051f57565b60048210156103335752565b9060048110156103335760ff80198354169116179055565b919082018092116104e757565b92919267ffffffffffffffff821161040d5760405191610fde601f8201601f191660200184610e91565b82948184528183011161051f578281602093845f96013701015256fea26469706673582212208cb45f30bf1d3bbb429ba293952ace8fc47871271cce78fcb2d7f51f3c7e579c64736f6c63430008180033",
+  "devdoc": {
+    "details": "This version uses hash-based privacy instead of FHE for easier testing",
+    "kind": "dev",
+    "methods": {},
+    "title": "SimplePrediction",
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "notice": "Simplified prediction market for testing without FHEVM",
+    "version": 1
+  },
+  "storageLayout": {
+    "storage": [
+      {
+        "astId": 39963,
+        "contract": "contracts/SimplePrediction.sol:SimplePrediction",
+        "label": "marketCount",
+        "offset": 0,
+        "slot": "0",
+        "type": "t_uint16"
+      },
+      {
+        "astId": 39968,
+        "contract": "contracts/SimplePrediction.sol:SimplePrediction",
+        "label": "markets",
+        "offset": 0,
+        "slot": "1",
+        "type": "t_mapping(t_uint16,t_struct(Market)39961_storage)"
+      },
+      {
+        "astId": 39974,
+        "contract": "contracts/SimplePrediction.sol:SimplePrediction",
+        "label": "predictionHashes",
+        "offset": 0,
+        "slot": "2",
+        "type": "t_mapping(t_uint16,t_mapping(t_address,t_bytes32))"
+      },
+      {
+        "astId": 39980,
+        "contract": "contracts/SimplePrediction.sol:SimplePrediction",
+        "label": "revealedPredictions",
+        "offset": 0,
+        "slot": "3",
+        "type": "t_mapping(t_uint16,t_mapping(t_address,t_bool))"
+      },
+      {
+        "astId": 39986,
+        "contract": "contracts/SimplePrediction.sol:SimplePrediction",
+        "label": "hasRevealed",
+        "offset": 0,
+        "slot": "4",
+        "type": "t_mapping(t_uint16,t_mapping(t_address,t_bool))"
+      },
+      {
+        "astId": 39992,
+        "contract": "contracts/SimplePrediction.sol:SimplePrediction",
+        "label": "hasPredicted",
+        "offset": 0,
+        "slot": "5",
+        "type": "t_mapping(t_uint16,t_mapping(t_address,t_bool))"
+      }
+    ],
+    "types": {
+      "t_address": {
+        "encoding": "inplace",
+        "label": "address",
+        "numberOfBytes": "20"
+      },
+      "t_bool": {
+        "encoding": "inplace",
+        "label": "bool",
+        "numberOfBytes": "1"
+      },
+      "t_bytes32": {
+        "encoding": "inplace",
+        "label": "bytes32",
+        "numberOfBytes": "32"
+      },
+      "t_enum(Outcome)39945": {
+        "encoding": "inplace",
+        "label": "enum SimplePrediction.Outcome",
+        "numberOfBytes": "1"
+      },
+      "t_mapping(t_address,t_bool)": {
+        "encoding": "mapping",
+        "key": "t_address",
+        "label": "mapping(address => bool)",
+        "numberOfBytes": "32",
+        "value": "t_bool"
+      },
+      "t_mapping(t_address,t_bytes32)": {
+        "encoding": "mapping",
+        "key": "t_address",
+        "label": "mapping(address => bytes32)",
+        "numberOfBytes": "32",
+        "value": "t_bytes32"
+      },
+      "t_mapping(t_uint16,t_mapping(t_address,t_bool))": {
+        "encoding": "mapping",
+        "key": "t_uint16",
+        "label": "mapping(uint16 => mapping(address => bool))",
+        "numberOfBytes": "32",
+        "value": "t_mapping(t_address,t_bool)"
+      },
+      "t_mapping(t_uint16,t_mapping(t_address,t_bytes32))": {
+        "encoding": "mapping",
+        "key": "t_uint16",
+        "label": "mapping(uint16 => mapping(address => bytes32))",
+        "numberOfBytes": "32",
+        "value": "t_mapping(t_address,t_bytes32)"
+      },
+      "t_mapping(t_uint16,t_struct(Market)39961_storage)": {
+        "encoding": "mapping",
+        "key": "t_uint16",
+        "label": "mapping(uint16 => struct SimplePrediction.Market)",
+        "numberOfBytes": "32",
+        "value": "t_struct(Market)39961_storage"
+      },
+      "t_string_storage": {
+        "encoding": "bytes",
+        "label": "string",
+        "numberOfBytes": "32"
+      },
+      "t_struct(Market)39961_storage": {
+        "encoding": "inplace",
+        "label": "struct SimplePrediction.Market",
+        "members": [
+          {
+            "astId": 39947,
+            "contract": "contracts/SimplePrediction.sol:SimplePrediction",
+            "label": "creator",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_address"
+          },
+          {
+            "astId": 39949,
+            "contract": "contracts/SimplePrediction.sol:SimplePrediction",
+            "label": "question",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_string_storage"
+          },
+          {
+            "astId": 39951,
+            "contract": "contracts/SimplePrediction.sol:SimplePrediction",
+            "label": "description",
+            "offset": 0,
+            "slot": "2",
+            "type": "t_string_storage"
+          },
+          {
+            "astId": 39953,
+            "contract": "contracts/SimplePrediction.sol:SimplePrediction",
+            "label": "deadline",
+            "offset": 0,
+            "slot": "3",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 39956,
+            "contract": "contracts/SimplePrediction.sol:SimplePrediction",
+            "label": "outcome",
+            "offset": 0,
+            "slot": "4",
+            "type": "t_enum(Outcome)39945"
+          },
+          {
+            "astId": 39958,
+            "contract": "contracts/SimplePrediction.sol:SimplePrediction",
+            "label": "resolved",
+            "offset": 1,
+            "slot": "4",
+            "type": "t_bool"
+          },
+          {
+            "astId": 39960,
+            "contract": "contracts/SimplePrediction.sol:SimplePrediction",
+            "label": "totalPredictors",
+            "offset": 0,
+            "slot": "5",
+            "type": "t_uint256"
+          }
+        ],
+        "numberOfBytes": "192"
+      },
+      "t_uint16": {
+        "encoding": "inplace",
+        "label": "uint16",
+        "numberOfBytes": "2"
+      },
+      "t_uint256": {
+        "encoding": "inplace",
+        "label": "uint256",
+        "numberOfBytes": "32"
+      }
+    }
+  }
+}

@@ -1,4 +1,4 @@
-const ZAMA_SDK_CDN_URL = "https://cdn.zama.ai/relayer-sdk-js/0.2.0/relayer-sdk-js.umd.cjs";
+const ZAMA_SDK_CDN_URL = "https://cdn.zama.org/relayer-sdk-js/0.3.0-5/relayer-sdk-js.umd.cjs";
 const SDK_LOAD_TIMEOUT = 30000;
 const RELAYER_SDK_GLOBAL_KEY = 'relayerSDK';
 
@@ -137,9 +137,15 @@ export async function initializeFhevm(): Promise<any> {
     console.log('🌐 Getting network configuration from SDK...');
     const sdkNetworkConfig = getSDKNetworkConfig(relayerSDK, chainId);
 
+    // Override network RPC URL for Sepolia
+    if (chainId === 11155111) {
+      sdkNetworkConfig.network = 'https://ethereum-sepolia-rpc.publicnode.com';
+    }
+
     console.log('📡 SDK Network Config:');
     console.log('  - ACL Address:', sdkNetworkConfig.aclContractAddress);
     console.log('  - KMS Address:', sdkNetworkConfig.kmsContractAddress);
+    console.log('  - Network RPC:', sdkNetworkConfig.network);
 
     console.log('🔨 Creating FHEVM instance...');
     const instance = await relayerSDK.createInstance(sdkNetworkConfig);
