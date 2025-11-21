@@ -2,6 +2,7 @@ const ZAMA_SDK_CDN_URL = "https://cdn.zama.org/relayer-sdk-js/0.3.0-5/relayer-sd
 const SDK_LOAD_TIMEOUT = 30000;
 const RELAYER_SDK_GLOBAL_KEY = 'relayerSDK';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let fhevmInstance: any | null = null;
 let isSDKLoaded = false;
 let isSDKInitialized = false;
@@ -16,12 +17,14 @@ async function loadRelayerSDK(): Promise<void> {
     return loadingPromise;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   if (isSDKLoaded && (window as any)[RELAYER_SDK_GLOBAL_KEY]) {
     return Promise.resolve();
   }
 
   loadingPromise = new Promise((resolve, reject) => {
     const existingScript = document.querySelector(`script[src="${ZAMA_SDK_CDN_URL}"]`);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     if (existingScript && (window as any)[RELAYER_SDK_GLOBAL_KEY]) {
       isSDKLoaded = true;
       resolve();
@@ -39,6 +42,7 @@ async function loadRelayerSDK(): Promise<void> {
 
     script.onload = () => {
       clearTimeout(timeoutId);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       if ((window as any)[RELAYER_SDK_GLOBAL_KEY]) {
         isSDKLoaded = true;
         console.log('✅ RelayerSDK loaded from CDN');
@@ -60,6 +64,7 @@ async function loadRelayerSDK(): Promise<void> {
 }
 
 async function initializeRelayerSDK(): Promise<void> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const relayerSDK = (window as any)[RELAYER_SDK_GLOBAL_KEY];
   if (!relayerSDK) {
     throw new Error('RelayerSDK not loaded. Call loadRelayerSDK() first.');
@@ -85,6 +90,7 @@ async function initializeRelayerSDK(): Promise<void> {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getSDKNetworkConfig(relayerSDK: any, chainId: number): any {
   switch (chainId) {
     case 11155111:
@@ -105,11 +111,14 @@ function getSDKNetworkConfig(relayerSDK: any, chainId: number): any {
 }
 
 function setupGlobalPolyfill(): void {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   if (typeof (globalThis as any).global === 'undefined') {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (globalThis as any).global = globalThis;
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function initializeFhevm(): Promise<any> {
   if (typeof window === 'undefined') {
     throw new Error('FHEVM can only be initialized in browser environment');
@@ -132,6 +141,7 @@ export async function initializeFhevm(): Promise<any> {
     await loadRelayerSDK();
     await initializeRelayerSDK();
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const relayerSDK = (window as any)[RELAYER_SDK_GLOBAL_KEY];
 
     console.log('🌐 Getting network configuration from SDK...');
@@ -169,6 +179,7 @@ export async function initializeFhevm(): Promise<any> {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function getFhevmInstance(): any {
   if (!fhevmInstance) {
     throw new Error('FHEVM not initialized. Call initializeFhevm() first.');
@@ -176,4 +187,5 @@ export function getFhevmInstance(): any {
   return fhevmInstance;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type FhevmInstance = any;

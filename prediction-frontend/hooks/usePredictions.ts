@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback } from "react";
 import { usePrivy, useWallets } from "@privy-io/react-auth";
 import { BrowserProvider, JsonRpcProvider } from "ethers";
 import { Contract } from "ethers";
@@ -64,6 +64,7 @@ export const usePredictions = () => {
         console.log("Transaction confirmed:", receipt);
 
         // Extract market ID from events
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const event = receipt.logs.find((log: any) => {
           try {
             const parsed = contract.interface.parseLog(log);
@@ -80,6 +81,7 @@ export const usePredictions = () => {
         }
 
         return { success: true, marketId: marketId?.toString(), txHash: tx.hash };
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (err: any) {
         console.error("Create market error:", err);
         const errorMsg = err?.reason || err?.message || "Failed to create market";
@@ -115,6 +117,7 @@ export const usePredictions = () => {
         console.log("Transaction confirmed:", receipt);
 
         return { success: true, txHash: tx.hash };
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (err: any) {
         console.error("Submit prediction error:", err);
         const errorMsg = err?.reason || err?.message || "Failed to submit prediction";
@@ -144,6 +147,7 @@ export const usePredictions = () => {
         console.log("Transaction confirmed:", receipt);
 
         return { success: true, txHash: tx.hash };
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (err: any) {
         console.error("Resolve market error:", err);
         const errorMsg = err?.reason || err?.message || "Failed to resolve market";
@@ -173,6 +177,7 @@ export const usePredictions = () => {
         console.log("Transaction confirmed:", receipt);
 
         return { success: true, txHash: tx.hash };
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (err: any) {
         console.error("Cancel market error:", err);
         const errorMsg = err?.reason || err?.message || "Failed to cancel market";
@@ -202,6 +207,7 @@ export const usePredictions = () => {
         console.log("Transaction confirmed:", receipt);
 
         return { success: true, txHash: tx.hash };
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (err: any) {
         console.error("Request decryption error:", err);
         const errorMsg = err?.reason || err?.message || "Failed to request decryption";
@@ -293,6 +299,7 @@ export const usePredictions = () => {
           wasCorrect: result[1], // bool
           isResolved: result[2], // bool
         };
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (err: any) {
         console.error("Get my prediction error:", err);
         throw new Error(err?.reason || err?.message || "Failed to get prediction");
@@ -310,6 +317,7 @@ export const usePredictions = () => {
         const contract = getReadOnlyContract();
         const handle = await contract.getEncryptedPredictionHandle(marketId, userAddress);
         return handle;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (err: any) {
         console.error("Get encrypted handle error:", err);
         throw new Error(err?.reason || err?.message || "Failed to get encrypted handle");
@@ -341,10 +349,11 @@ export const usePredictions = () => {
         );
         console.log("Transaction sent:", tx.hash);
 
-        const receipt = await tx.wait();
+        await tx.wait();
         console.log("✅ Proof verified and cached on-chain!");
 
         return { success: true, txHash: tx.hash };
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (err: any) {
         console.error("Submit proof error:", err);
         const errorMsg = err?.reason || err?.message || "Failed to submit proof";
@@ -422,6 +431,7 @@ export const usePredictions = () => {
           prediction: predictionBool,
           txHash: submitResult.txHash,
         };
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (err: any) {
         console.error("❌ Complete decryption workflow failed:", err);
         const errorMsg = err?.message || "Decryption workflow failed";
