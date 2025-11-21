@@ -27,14 +27,4 @@ contract PredictionStorage {
     // Decryption status tracking
     mapping(uint16 => mapping(address => CommonStruct.DecryptStatus))
         public decryptPredictionStatus;
-
-    // Total predictions decryption (after resolution)
-    mapping(uint16 => CommonStruct.Uint64ResultWithExp) public decryptedTotalYes;
-    mapping(uint16 => CommonStruct.Uint64ResultWithExp) public decryptedTotalNo;
-    mapping(uint16 => CommonStruct.DecryptStatus) public decryptTotalYesStatus;
-    mapping(uint16 => CommonStruct.DecryptStatus) public decryptTotalNoStatus;
-
-    // Decryption request tracking
-    mapping(uint256 => PredictionStruct.DecryptPredictionRequest) public decryptPredictionRequest;
-    mapping(uint256 => PredictionStruct.DecryptTotalRequest) public decryptTotalRequest;
 }

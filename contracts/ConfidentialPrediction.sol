@@ -69,9 +69,7 @@ contract ConfidentialPrediction is
             description: description,
             deadline: block.timestamp + duration,
             outcome: PredictionStruct.Outcome.PENDING,
-            resolved: false,
-            totalYesPredictions: 0,
-            totalNoPredictions: 0
+            resolved: false
         });
 
         emit MarketCreated(
@@ -163,30 +161,6 @@ contract ConfidentialPrediction is
 
         market.outcome = outcome;
         market.resolved = true;
-
-        // Count predictions (for statistics)
-        address[] memory allPredictors = predictors[marketId];
-        uint64 yesCount = 0;
-        uint64 noCount = 0;
-
-        for (uint256 i = 0; i < allPredictors.length; i++) {
-            ebool userPrediction = encryptedPredictions[marketId][allPredictors[i]];
-
-            // Convert ebool to euint64: true -> 1, false -> 0
-            euint64 predictionValue = FHE.select(userPrediction, FHE.asEuint64(1), FHE.asEuint64(0));
-
-            // For Yes count: if prediction is true (YES), add 1
-            euint64 currentYesTotal = FHE.asEuint64(yesCount);
-            euint64 newYesTotal = FHE.add(currentYesTotal, predictionValue);
-
-            // For No count: if prediction is false (NO), add 1
-            euint64 notPrediction = FHE.sub(FHE.asEuint64(1), predictionValue); // Invert: 1-1=0, 1-0=1
-            euint64 currentNoTotal = FHE.asEuint64(noCount);
-            euint64 newNoTotal = FHE.add(currentNoTotal, notPrediction);
-
-            // Request decryption for final counts (simplified - just storing encrypted counts)
-            // In practice, creator would decrypt these to see statistics
-        }
 
         emit MarketResolved(marketId, outcome);
     }

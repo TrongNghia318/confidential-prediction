@@ -22,5 +22,5 @@ if [ -d "deployments/$NETWORK" ]; then
   fi
 
   echo ""
-  echo "💡 Update your frontend .env.local with these addresses"
+  echo "💡 Update frontend .env.local with these addresses"
 fi

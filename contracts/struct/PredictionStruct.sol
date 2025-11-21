@@ -18,17 +18,5 @@ library PredictionStruct {
         uint256 deadline;
         Outcome outcome;
         bool resolved;
-        uint64 totalYesPredictions;
-        uint64 totalNoPredictions;
-    }
-
-    struct DecryptPredictionRequest {
-        address userAddress;
-        uint16 marketId;
-    }
-
-    struct DecryptTotalRequest {
-        uint16 marketId;
-        bool isYesTotal;
     }
 }

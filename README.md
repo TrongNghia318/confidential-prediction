@@ -8,7 +8,7 @@ Author: [@Gengarthedev](https://x.com/Gengarthedev)
 
 | Contract Name | Network | Contract Address |
 |--------------|---------|------------------|
-| ConfidentialPrediction | Sepolia | [`0xfD012bc5529AD1C08EF7C647AF64129437074892`](https://sepolia.etherscan.io/address/0xfD012bc5529AD1C08EF7C647AF64129437074892) |
+| ConfidentialPrediction | Sepolia | [`0x7407B9C63793546d97CD41A23bf4C461CC0ADC95`](https://sepolia.etherscan.io/address/0x7407B9C63793546d97CD41A23bf4C461CC0ADC95) |
 
 ---
 
@@ -296,7 +296,7 @@ cd prediction-frontend
 cp .env.example .env.local
 
 # Add your configuration
-NEXT_PUBLIC_CONTRACT_ADDRESS=0xfD012bc5529AD1C08EF7C647AF64129437074892
+NEXT_PUBLIC_CONTRACT_ADDRESS=0x7407B9C63793546d97CD41A23bf4C461CC0ADC95
 NEXT_PUBLIC_CHAIN_ID=11155111
 NEXT_PUBLIC_RPC_URL=https://ethereum-sepolia-rpc.publicnode.com
 NEXT_PUBLIC_GATEWAY_URL=https://gateway.sepolia.zama.ai
@@ -374,7 +374,7 @@ npm start
 Update this value in your `.env.local` file:
 
 ```
-NEXT_PUBLIC_CONTRACT_ADDRESS=0xfD012bc5529AD1C08EF7C647AF64129437074892
+NEXT_PUBLIC_CONTRACT_ADDRESS=0x7407B9C63793546d97CD41A23bf4C461CC0ADC95
 NEXT_PUBLIC_CHAIN_ID=11155111
 ```
 
@@ -382,7 +382,7 @@ NEXT_PUBLIC_CHAIN_ID=11155111
 
 #### ConfidentialPrediction.sol
 
-**Address**: `0xfD012bc5529AD1C08EF7C647AF64129437074892`
+**Address**: `0x7407B9C63793546d97CD41A23bf4C461CC0ADC95`
 
 **Purpose**: Privacy-preserving prediction market contract
 
@@ -439,8 +439,6 @@ struct Market {
     uint256 deadline;
     Outcome outcome;
     bool resolved;
-    uint64 totalYesPredictions;  // For statistics (encrypted)
-    uint64 totalNoPredictions;   // For statistics (encrypted)
 }
 ```
 
@@ -499,7 +497,7 @@ npx hardhat flatten contracts/ConfidentialPrediction.sol > flattened/Confidentia
 npx hardhat console --network sepolia
 
 # Example: Check market count
-const contract = await ethers.getContractAt("ConfidentialPrediction", "0xfD012bc5529AD1C08EF7C647AF64129437074892");
+const contract = await ethers.getContractAt("ConfidentialPrediction", "0x7407B9C63793546d97CD41A23bf4C461CC0ADC95");
 const count = await contract.marketCount();
 console.log("Total markets:", count.toString());
 ```
