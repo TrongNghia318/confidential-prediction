@@ -29,6 +29,11 @@ export const useEncrypt = () => {
       setError(null);
 
       try {
+        console.log("🔐 Creating encrypted input with:");
+        console.log("  - Contract:", CONTRACT_ADDRESS);
+        console.log("  - User:", userAddress);
+        console.log("  - FHEVM config:", instance.config);
+
         const input = instance.createEncryptedInput(
           CONTRACT_ADDRESS,
           userAddress
@@ -38,11 +43,20 @@ export const useEncrypt = () => {
 
         const encryptedInput = await input.encrypt();
 
+        console.log("🔍 Encryption result structure:", {
+          handles: encryptedInput.handles,
+          inputProof: encryptedInput.inputProof,
+          allKeys: Object.keys(encryptedInput)
+        });
+
         if (!encryptedInput.handles?.[0] || !encryptedInput.inputProof) {
+          console.error("❌ Invalid encryption result:", encryptedInput);
           throw new Error("Invalid encryption result");
         }
 
         console.log("✅ Encryption successful");
+        console.log("  - Encrypted data:", encryptedInput.handles[0]);
+        console.log("  - Proof:", encryptedInput.inputProof);
 
         return {
           encryptedData: encryptedInput.handles[0],

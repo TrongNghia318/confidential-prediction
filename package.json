@@ -20,7 +20,8 @@
   },
   "devDependencies": {
     "@fhevm/core-contracts": "^0.8.0",
-    "@fhevm/solidity": "^0.8.0",
+    "@fhevm/hardhat-plugin": "^0.3.0-1",
+    "@fhevm/solidity": "^0.9.1",
     "@nomicfoundation/hardhat-chai-matchers": "^2.0.0",
     "@nomicfoundation/hardhat-ethers": "^3.0.0",
     "@nomicfoundation/hardhat-network-helpers": "^1.0.0",

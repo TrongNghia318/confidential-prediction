@@ -2,6 +2,7 @@
 pragma solidity ^0.8.24;
 
 import "@fhevm/solidity/lib/FHE.sol";
+import {ZamaEthereumConfig} from "@fhevm/solidity/config/ZamaConfig.sol";
 import "./interface/IDecryptionCallbacks.sol";
 import "./interface/IPredictionEvents.sol";
 import "./interface/IPredictionErrors.sol";
@@ -23,6 +24,7 @@ import "./interface/impl/DecryptionCallback.sol";
  * - Users can see if they predicted correctly after resolution
  */
 contract ConfidentialPrediction is
+    ZamaEthereumConfig,
     IPredictionEvents,
     IPredictionErrors,
     PredictionStorage,
@@ -214,7 +216,9 @@ contract ConfidentialPrediction is
     }
 
     /**
-     * @notice Requests decryption of the user's prediction
+     * @notice Marks the caller's prediction as publicly decryptable (v0.9 self-relaying)
+     * @dev After calling this, use the frontend relayer SDK's publicDecrypt() to get cleartext + proof,
+     * then call submitMyPredictionDecryption() with the results to cache the decrypted value.
      * @param marketId The ID of the market
      */
     function requestMyPredictionDecryption(uint16 marketId) public {
@@ -229,23 +233,57 @@ contract ConfidentialPrediction is
             revert DecryptAlreadyInProgress();
         }
 
-        bytes32[] memory handles = new bytes32[](1);
-        handles[0] = FHE.toBytes32(encryptedPredictions[marketId][msg.sender]);
+        ebool userPrediction = encryptedPredictions[marketId][msg.sender];
 
-        uint256 requestId = FHE.requestDecryption(
-            handles,
-            IDecryptionCallbacks.callbackDecryptMyPrediction.selector
-        );
-
-        decryptPredictionRequest[requestId] = PredictionStruct
-            .DecryptPredictionRequest({
-                userAddress: msg.sender,
-                marketId: marketId
-            });
+        // Mark as publicly decryptable (v0.9 pattern)
+        FHE.makePubliclyDecryptable(userPrediction);
 
         decryptPredictionStatus[marketId][msg.sender] = CommonStruct
             .DecryptStatus
             .PROCESSING;
+    }
+
+    /**
+     * @notice Submits and verifies the decrypted prediction (v0.9 self-relaying)
+     * @dev Called by the user after obtaining cleartext + proof via publicDecrypt() from the relayer SDK.
+     * Verifies the proof and caches the decrypted value.
+     * @param marketId The ID of the market
+     * @param cleartextPrediction The decrypted prediction value (true = YES, false = NO)
+     * @param proof The cryptographic proof from the relayer SDK
+     */
+    function submitMyPredictionDecryption(
+        uint16 marketId,
+        bool cleartextPrediction,
+        bytes calldata proof
+    ) public {
+        ebool userPrediction = encryptedPredictions[marketId][msg.sender];
+        if (!FHE.isInitialized(userPrediction)) {
+            revert NoPredictionFound();
+        }
+
+        if (
+            decryptPredictionStatus[marketId][msg.sender] !=
+            CommonStruct.DecryptStatus.PROCESSING
+        ) {
+            revert DecryptAlreadyInProgress();
+        }
+
+        // Verify the decryption proof
+        bytes32[] memory handles = new bytes32[](1);
+        handles[0] = FHE.toBytes32(userPrediction);
+        bytes memory cleartexts = abi.encode(cleartextPrediction);
+        FHE.checkSignatures(handles, cleartexts, proof);
+
+        // Cache the decrypted value
+        decryptedPredictions[marketId][msg.sender] = CommonStruct
+            .BoolResultWithExp({
+                data: cleartextPrediction,
+                exp: block.timestamp + cacheTimeout
+            });
+
+        decryptPredictionStatus[marketId][msg.sender] = CommonStruct
+            .DecryptStatus
+            .DECRYPTED;
     }
 
     /**
@@ -390,5 +428,23 @@ contract ConfidentialPrediction is
         address user
     ) external view returns (ebool) {
         return encryptedPredictions[marketId][user];
+    }
+
+    /**
+     * @notice Gets the encrypted prediction handle as bytes32 (v0.9 self-relaying)
+     * @dev Use this handle with the relayer SDK's publicDecrypt() method
+     * @param marketId The ID of the market
+     * @param user The address of the predictor
+     * @return The encrypted prediction handle
+     */
+    function getEncryptedPredictionHandle(
+        uint16 marketId,
+        address user
+    ) external view returns (bytes32) {
+        ebool prediction = encryptedPredictions[marketId][user];
+        if (!FHE.isInitialized(prediction)) {
+            revert NoPredictionFound();
+        }
+        return FHE.toBytes32(prediction);
     }
 }

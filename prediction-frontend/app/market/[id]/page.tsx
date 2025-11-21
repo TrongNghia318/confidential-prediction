@@ -17,8 +17,7 @@ export default function MarketDetailPage({ params }: { params: Promise<{ id: str
     checkHasPrediction,
     submitPrediction,
     resolveMarket,
-    requestDecryption,
-    getMyPrediction,
+    completeMyPredictionDecryption,
     isLoading: contractLoading,
   } = usePredictions();
   const { encryptBool, isEncrypting } = useEncrypt();
@@ -114,31 +113,42 @@ export default function MarketDetailPage({ params }: { params: Promise<{ id: str
 
   const handleDecryptPrediction = async () => {
     setError('');
+    setSuccess('');
 
     try {
-      // First request decryption
-      const decryptResult = await requestDecryption(marketId);
+      setSuccess('🔐 Step 1/4: Marking as decryptable...');
 
-      if (!decryptResult.success) {
-        setError(decryptResult.error || 'Failed to request decryption');
+      // v0.9 Self-Relaying: Complete 4-step workflow
+      const result = await completeMyPredictionDecryption(marketId);
+
+      if (!result.success) {
+        setError(result.error || 'Failed to decrypt prediction');
+        setSuccess('');
         return;
       }
 
-      setSuccess('Decryption requested! Please wait...');
+      // Successfully decrypted - compute wasCorrect based on market outcome
+      const predictionBool = result.prediction!;
+      let wasCorrect = false;
+      if (market?.resolved) {
+        const actualOutcome = market.outcome === 1; // 1 = YES, 2 = NO
+        wasCorrect = predictionBool === actualOutcome;
+      }
 
-      // Wait a bit for the callback
-      setTimeout(async () => {
-        try {
-          const prediction = await getMyPrediction(marketId);
-          setMyPrediction(prediction);
-          setShowDecrypted(true);
-          setSuccess('');
-        } catch (err: any) {
-          setError('Decryption is processing, please try again in a moment');
-        }
-      }, 5000);
+      setMyPrediction({
+        prediction: predictionBool,
+        wasCorrect,
+        isResolved: market?.resolved || false,
+      });
+      setShowDecrypted(true);
+      setSuccess('✅ Prediction decrypted successfully!');
+
+      // Clear success message after 3 seconds
+      setTimeout(() => setSuccess(''), 3000);
     } catch (err: any) {
+      console.error('Decrypt error:', err);
       setError(err.message || 'Failed to decrypt prediction');
+      setSuccess('');
     }
   };
 

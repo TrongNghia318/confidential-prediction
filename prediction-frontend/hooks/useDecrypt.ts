@@ -1,107 +1,131 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { usePrivy, useWallets } from "@privy-io/react-auth";
-import { createWalletClient, custom } from "viem";
-import { sepolia } from "viem/chains";
 import { useFhevm } from "../contexts/FhevmContext";
-import { HandleContractPair } from "@zama-fhe/relayer-sdk/web";
-import { BrowserProvider } from 'ethers';
 
+/**
+ * Hook for v0.9 self-relaying public decryption workflow
+ * @returns Functions to decrypt encrypted handles using the relayer SDK
+ */
 export const useDecrypt = () => {
   const { instance, isInitialized } = useFhevm();
-  const { user } = usePrivy();
-  const { wallets } = useWallets();
   const [isDecrypting, setIsDecrypting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<Error | null>(null);
 
-  const decrypt = useCallback(
-    async (handle: string, contractAddress: string): Promise<boolean> => {
-      console.log("🔓 Decrypt called with handle:", handle.toString());
-      console.log("📍 Contract address:", contractAddress);
-
-      if (!isInitialized || !instance) {
-        throw new Error("FHEVM not initialized");
-      }
-
-      const userAddress = user?.wallet?.address;
-      if (!userAddress) {
-        throw new Error("Wallet not connected");
-      }
-
+  /**
+   * Decrypt an encrypted handle using the v0.9 publicDecrypt API
+   * @param handle The encrypted handle (bytes32 as hex string)
+   * @param contractAddress The contract address that owns the encrypted value
+   * @returns Object containing cleartext value and cryptographic proof
+   */
+  const publicDecrypt = useCallback(
+    async (
+      handle: string,
+      contractAddress: string
+    ): Promise<{ cleartext: bigint; proof: Uint8Array }> => {
       setIsDecrypting(true);
       setError(null);
 
       try {
-        const wallet = wallets[0];
-        if (!wallet) throw new Error("No wallet found");
+        if (!instance || !isInitialized) {
+          throw new Error(
+            "FHEVM not initialized. Please wait for initialization to complete."
+          );
+        }
 
-        const provider = await wallet.getEthereumProvider();
-        const ethersProvider = new BrowserProvider(provider);
+        if (!instance.publicDecrypt) {
+          throw new Error("publicDecrypt method not available on FHEVM instance.");
+        }
 
-        const walletClient = createWalletClient({
-          account: userAddress as `0x${string}`,
-          chain: sepolia,
-          transport: custom(provider),
-        });
+        console.log("🔓 Starting public decryption (v0.9)...");
+        console.log("  - Handle:", handle);
+        console.log("  - Contract:", contractAddress);
 
-        console.log("🔐 Generating keypair...");
-        const keypair = instance.generateKeypair();
+        // Call publicDecrypt on the FHEVM instance
+        // Based on v0.9 SDK: instance.publicDecrypt([handles])
+        const result = await instance.publicDecrypt([handle]);
 
-        const handleContractPairs = [
-          {
-            handle: handle,
-            contractAddress: contractAddress,
-          } as HandleContractPair,
-        ];
+        console.log("✅ publicDecrypt raw result:", result);
 
-        const startTimeStamp = Math.floor(Date.now() / 1000).toString();
-        const durationDays = "10";
-        const contractAddresses = [contractAddress];
+        if (!result || typeof result !== 'object') {
+          throw new Error("publicDecrypt returned invalid result");
+        }
 
-        const eip712 = instance.createEIP712(
-          keypair.publicKey,
-          contractAddresses,
-          startTimeStamp,
-          durationDays
-        );
+        // v0.9 SDK returns: { clearValues, abiEncodedClearValues, decryptionProof }
+        const { clearValues, abiEncodedClearValues, decryptionProof } = result;
 
-        const signature = await (await ethersProvider.getSigner()).signTypedData(
-          eip712.domain,
-          {
-            UserDecryptRequestVerification: eip712.types.UserDecryptRequestVerification,
-          },
-          eip712.message
-        );
+        if (!clearValues) {
+          throw new Error("clearValues not found in decryption result");
+        }
 
-        const result = await instance.userDecrypt(
-          handleContractPairs,
-          keypair.privateKey,
-          keypair.publicKey,
-          signature.replace("0x", ""),
-          contractAddresses,
-          wallet.address,
-          startTimeStamp,
-          durationDays
-        );
+        // clearValues is an object with handle as key
+        const decryptedValue = clearValues[handle as keyof typeof clearValues];
 
-        const decryptedValue = result[handle];
+        if (decryptedValue === undefined || decryptedValue === null) {
+          console.error("❌ clearValues object:", clearValues);
+          console.error("❌ Looking for handle:", handle);
+          throw new Error("Decryption failed: no value returned for handle");
+        }
 
-        console.log("✅ Decryption successful:", decryptedValue);
+        console.log("✅ Decryption successful!");
+        console.log("  - Cleartext:", decryptedValue.toString());
+        console.log("  - ABI Encoded:", abiEncodedClearValues);
+        console.log("  - Proof:", decryptionProof?.substring(0, 66) + '...');
 
-        return Boolean(decryptedValue);
+        // Convert to bigint
+        const cleartextBigInt =
+          typeof decryptedValue === "bigint"
+            ? decryptedValue
+            : typeof decryptedValue === "number"
+            ? BigInt(decryptedValue)
+            : typeof decryptedValue === "boolean"
+            ? BigInt(decryptedValue ? 1 : 0)
+            : BigInt(decryptedValue);
+
+        // Extract the proof
+        let proofUint8: Uint8Array;
+        if (decryptionProof) {
+          // Convert hex string to Uint8Array
+          const proofHex = decryptionProof.startsWith('0x')
+            ? decryptionProof.slice(2)
+            : decryptionProof;
+          proofUint8 = new Uint8Array(
+            proofHex.match(/.{1,2}/g)?.map((byte: string) => parseInt(byte, 16)) || []
+          );
+          console.log("📝 Proof extracted, length:", proofUint8.length, "bytes");
+        } else {
+          console.error("❌ No decryptionProof in result!");
+          throw new Error("Decryption proof not found in result");
+        }
+
+        return {
+          cleartext: cleartextBigInt,
+          proof: proofUint8,
+        };
       } catch (err) {
-        console.error("❌ Decryption error:", err);
-        const errorMsg =
-          err instanceof Error ? err.message : "Decryption failed";
-        setError(errorMsg);
-        throw new Error(errorMsg);
+        console.error("❌ Public decryption failed:", err);
+        const error =
+          err instanceof Error ? err : new Error("Unknown decryption error");
+        setError(error);
+        throw error;
       } finally {
         setIsDecrypting(false);
       }
     },
-    [instance, isInitialized, user, wallets]
+    [instance, isInitialized]
   );
 
-  return { decrypt, isDecrypting, error };
+  /**
+   * Legacy decrypt method for backward compatibility
+   * Converts bool result to boolean type
+   */
+  const decrypt = useCallback(
+    async (handle: string, contractAddress: string): Promise<boolean> => {
+      const { cleartext } = await publicDecrypt(handle, contractAddress);
+      return cleartext !== BigInt(0);
+    },
+    [publicDecrypt]
+  );
+
+  return { decrypt, publicDecrypt, isDecrypting, error };
 };
