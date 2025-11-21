@@ -2,7 +2,7 @@
 
 A privacy-preserving prediction platform built with **FHEVM (Fully Homomorphic Encryption Virtual Machine)**. Users can make predictions on binary outcome events while keeping their predictions completely private using on-chain encryption. No betting or financial aspects - pure prediction tracking with cryptographic privacy.
 
-Author: [@cris_thedev](https://x.com/cris_thedev)
+Author: [@Gengarthedev](https://x.com/Gengarthedev)
 
 ---
 
@@ -42,7 +42,7 @@ The platform consists of two main layers: **Smart Contracts** (on-chain logic) a
 │  - Market Management                                │
 │  - Encrypted Prediction Storage                     │
 │  - Resolution Logic                                 │
-│  - Decryption Workflow (v0.9 Self-Relaying)        │
+│  - Decryption Workflow (v0.9 Self-Relaying)         │
 └─────────────────────────────────────────────────────┘
                          │
                          │ Uses
@@ -50,10 +50,10 @@ The platform consists of two main layers: **Smart Contracts** (on-chain logic) a
 ┌─────────────────────────────────────────────────────┐
 │              FHEVM Library (Zama)                   │
 ├─────────────────────────────────────────────────────┤
-│  - FHE.asEbool() / FHE.fromExternal()              │
-│  - FHE.makePubliclyDecryptable()                   │
-│  - FHE.checkSignatures()                           │
-│  - FHE.allow() - Permission management             │
+│  - FHE.asEbool() / FHE.fromExternal()               │
+│  - FHE.makePubliclyDecryptable()                    │
+│  - FHE.checkSignatures()                            │
+│  - FHE.allow() - Permission management              │
 └─────────────────────────────────────────────────────┘
 ```
 
@@ -616,4 +616,4 @@ This platform uses **FHEVM (Fully Homomorphic Encryption)** to ensure:
 
 ---
 
-Built with ❤️ by [@cris_thedev](https://x.com/cris_thedev) using Zama's FHEVM technology
+Built with ❤️ by [@Gengarthedev](https://x.com/Gengarthedev) using Zama's FHEVM technology
