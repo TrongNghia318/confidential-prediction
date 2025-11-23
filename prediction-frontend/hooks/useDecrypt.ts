@@ -20,8 +20,7 @@ export const useDecrypt = () => {
    */
   const publicDecrypt = useCallback(
     async (
-      handle: string,
-      contractAddress: string
+      handle: string
     ): Promise<{ cleartext: bigint; proof: Uint8Array }> => {
       setIsDecrypting(true);
       setError(null);
@@ -34,31 +33,25 @@ export const useDecrypt = () => {
         }
 
         if (!instance.publicDecrypt) {
-          throw new Error("publicDecrypt method not available on FHEVM instance.");
+          throw new Error(
+            "publicDecrypt method not available on FHEVM instance."
+          );
         }
 
-        console.log("🔓 Starting public decryption (v0.9)...");
-        console.log("  - Handle:", handle);
-        console.log("  - Contract:", contractAddress);
-
-        // Call publicDecrypt on the FHEVM instance
-        // Based on v0.9 SDK: instance.publicDecrypt([handles])
         const result = await instance.publicDecrypt([handle]);
 
         console.log("✅ publicDecrypt raw result:", result);
 
-        if (!result || typeof result !== 'object') {
+        if (!result || typeof result !== "object") {
           throw new Error("publicDecrypt returned invalid result");
         }
 
-        // v0.9 SDK returns: { clearValues, abiEncodedClearValues, decryptionProof }
         const { clearValues, abiEncodedClearValues, decryptionProof } = result;
 
         if (!clearValues) {
           throw new Error("clearValues not found in decryption result");
         }
 
-        // clearValues is an object with handle as key
         const decryptedValue = clearValues[handle as keyof typeof clearValues];
 
         if (decryptedValue === undefined || decryptedValue === null) {
@@ -70,7 +63,7 @@ export const useDecrypt = () => {
         console.log("✅ Decryption successful!");
         console.log("  - Cleartext:", decryptedValue.toString());
         console.log("  - ABI Encoded:", abiEncodedClearValues);
-        console.log("  - Proof:", decryptionProof?.substring(0, 66) + '...');
+        console.log("  - Proof:", decryptionProof?.substring(0, 66) + "...");
 
         // Convert to bigint
         const cleartextBigInt =
@@ -86,13 +79,19 @@ export const useDecrypt = () => {
         let proofUint8: Uint8Array;
         if (decryptionProof) {
           // Convert hex string to Uint8Array
-          const proofHex = decryptionProof.startsWith('0x')
+          const proofHex = decryptionProof.startsWith("0x")
             ? decryptionProof.slice(2)
             : decryptionProof;
           proofUint8 = new Uint8Array(
-            proofHex.match(/.{1,2}/g)?.map((byte: string) => parseInt(byte, 16)) || []
+            proofHex
+              .match(/.{1,2}/g)
+              ?.map((byte: string) => parseInt(byte, 16)) || []
           );
-          console.log("📝 Proof extracted, length:", proofUint8.length, "bytes");
+          console.log(
+            "📝 Proof extracted, length:",
+            proofUint8.length,
+            "bytes"
+          );
         } else {
           console.error("❌ No decryptionProof in result!");
           throw new Error("Decryption proof not found in result");
@@ -120,8 +119,8 @@ export const useDecrypt = () => {
    * Converts bool result to boolean type
    */
   const decrypt = useCallback(
-    async (handle: string, contractAddress: string): Promise<boolean> => {
-      const { cleartext } = await publicDecrypt(handle, contractAddress);
+    async (handle: string): Promise<boolean> => {
+      const { cleartext } = await publicDecrypt(handle);
       return cleartext !== BigInt(0);
     },
     [publicDecrypt]

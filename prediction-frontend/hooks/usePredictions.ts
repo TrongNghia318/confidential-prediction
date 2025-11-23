@@ -414,7 +414,7 @@ export const usePredictions = () => {
 
         // Step 3: Decrypt using relayer SDK
         console.log("🔓 Step 3: Decrypting prediction with relayer SDK...");
-        const { cleartext, proof } = await publicDecrypt(handle, CONTRACT_ADDRESS);
+        const { cleartext, proof } = await publicDecrypt(handle);
         const predictionBool = cleartext !== BigInt(0);
         console.log("  - Decrypted prediction:", predictionBool ? "YES" : "NO");
 

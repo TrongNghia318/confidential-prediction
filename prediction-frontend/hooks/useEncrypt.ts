@@ -29,11 +29,6 @@ export const useEncrypt = () => {
       setError(null);
 
       try {
-        console.log("🔐 Creating encrypted input with:");
-        console.log("  - Contract:", CONTRACT_ADDRESS);
-        console.log("  - User:", userAddress);
-        console.log("  - FHEVM config:", instance.config);
-
         const input = instance.createEncryptedInput(
           CONTRACT_ADDRESS,
           userAddress

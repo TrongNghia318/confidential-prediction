@@ -20,7 +20,7 @@ export default function MarketDetailPage({ params }: { params: Promise<{ id: str
     completeMyPredictionDecryption,
     isLoading: contractLoading,
   } = usePredictions();
-  const { encryptBool, isEncrypting } = useEncrypt();
+  const { encryptBool } = useEncrypt();
 
   const [market, setMarket] = useState<Market | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -38,6 +38,7 @@ export default function MarketDetailPage({ params }: { params: Promise<{ id: str
 
   useEffect(() => {
     loadMarket();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [marketId]);
 
   const loadMarket = async () => {
