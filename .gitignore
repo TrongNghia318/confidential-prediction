@@ -9,6 +9,9 @@ typechain-types
 cache
 artifacts
 
+# Demo scripts
+.last-demo-market.json
+
 # Deployments (optional - uncomment if you don't want to commit)
 # deployments
 

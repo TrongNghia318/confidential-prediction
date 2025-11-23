@@ -3,6 +3,7 @@ import './globals.css';
 import PrivyProvider from '../contexts/PrivyProvider';
 import { FhevmProvider } from '../contexts/FhevmContext';
 import Navigation from '../components/Navigation';
+import NetworkGuard from '../components/NetworkGuard';
 
 export const metadata: Metadata = {
   title: 'Confidential Prediction Market',
@@ -19,6 +20,7 @@ export default function RootLayout({
       <body>
         <PrivyProvider>
           <FhevmProvider>
+            <NetworkGuard />
             <div className="min-h-screen flex flex-col">
               <Navigation />
               <main className="flex-1">
