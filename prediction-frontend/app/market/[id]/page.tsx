@@ -28,6 +28,7 @@ export default function MarketDetailPage({ params }: { params: Promise<{ id: str
   const [selectedPrediction, setSelectedPrediction] = useState<boolean | null>(null);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [myPrediction, setMyPrediction] = useState<{
     prediction: boolean;
     wasCorrect: boolean;
@@ -68,6 +69,7 @@ export default function MarketDetailPage({ params }: { params: Promise<{ id: str
 
     setError('');
     setSuccess('');
+    setIsSubmitting(true);
 
     try {
       const { encryptedData, proof } = await encryptBool(selectedPrediction);
@@ -82,8 +84,11 @@ export default function MarketDetailPage({ params }: { params: Promise<{ id: str
       } else {
         setError(result.error || 'Failed to submit prediction');
       }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setError(err.message || 'Failed to submit prediction');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -106,6 +111,7 @@ export default function MarketDetailPage({ params }: { params: Promise<{ id: str
       } else {
         setError(result.error || 'Failed to resolve market');
       }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setError(err.message || 'Failed to resolve market');
     }
@@ -145,6 +151,7 @@ export default function MarketDetailPage({ params }: { params: Promise<{ id: str
 
       // Clear success message after 3 seconds
       setTimeout(() => setSuccess(''), 3000);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.error('Decrypt error:', err);
       setError(err.message || 'Failed to decrypt prediction');
@@ -288,10 +295,10 @@ export default function MarketDetailPage({ params }: { params: Promise<{ id: str
 
           <button
             onClick={handlePredict}
-            disabled={selectedPrediction === null || isEncrypting || contractLoading}
+            disabled={selectedPrediction === null || isSubmitting}
             className="w-full gradient-purple text-white px-6 py-3 rounded-lg hover:opacity-90 transition font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
           >
-            {isEncrypting || contractLoading ? (
+            {isSubmitting ? (
               <>
                 <LoadingSpinner size="sm" />
                 <span className="ml-2">Submitting...</span>
