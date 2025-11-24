@@ -49,7 +49,7 @@ export const useEncrypt = () => {
           throw new Error("Invalid encryption result");
         }
 
-        console.log("✅ Encryption successful");
+        console.log("Encryption successful");
         console.log("  - Encrypted data:", encryptedInput.handles[0]);
         console.log("  - Proof:", encryptedInput.inputProof);
 

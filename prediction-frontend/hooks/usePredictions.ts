@@ -23,7 +23,7 @@ export interface Market {
 export const usePredictions = () => {
   const { user, authenticated } = usePrivy();
   const { wallets } = useWallets();
-  const { publicDecrypt } = useDecrypt();
+  const { decrypt } = useDecrypt();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -337,11 +337,6 @@ export const usePredictions = () => {
       try {
         const contract = await getContract();
 
-        console.log("📤 Submitting prediction decryption proof...");
-        console.log("  - Market ID:", marketId);
-        console.log("  - Cleartext:", cleartextPrediction);
-        console.log("  - Proof length:", proof.length);
-
         const tx = await contract.submitMyPredictionDecryption(
           marketId,
           cleartextPrediction,
@@ -350,7 +345,6 @@ export const usePredictions = () => {
         console.log("Transaction sent:", tx.hash);
 
         await tx.wait();
-        console.log("✅ Proof verified and cached on-chain!");
 
         return { success: true, txHash: tx.hash };
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -412,24 +406,16 @@ export const usePredictions = () => {
         const handle = await getEncryptedPredictionHandle(marketId, user.wallet.address);
         console.log("  - Handle:", handle);
 
-        // Step 3: Decrypt using relayer SDK
-        console.log("🔓 Step 3: Decrypting prediction with relayer SDK...");
-        const { cleartext, proof } = await publicDecrypt(handle);
+        // Step 3: Decrypt using relayer SDK with user signature
+        console.log("🔓 Step 3: Decrypting prediction with user signature...");
+        const cleartext = await decrypt(handle, CONTRACT_ADDRESS);
         const predictionBool = cleartext !== BigInt(0);
         console.log("  - Decrypted prediction:", predictionBool ? "YES" : "NO");
 
-        // Step 4: Submit proof to contract
-        console.log("📤 Step 4: Submitting proof to contract...");
-        const submitResult = await submitMyPredictionDecryption(marketId, predictionBool, proof);
-        if (!submitResult.success) {
-          throw new Error(submitResult.error || "Failed to submit proof");
-        }
-
-        console.log("✅ Complete decryption workflow successful!");
+        console.log("✅ Decryption successful!");
         return {
           success: true,
           prediction: predictionBool,
-          txHash: submitResult.txHash,
         };
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (err: any) {
@@ -441,7 +427,7 @@ export const usePredictions = () => {
         setIsLoading(false);
       }
     },
-    [user, requestDecryption, getEncryptedPredictionHandle, publicDecrypt, submitMyPredictionDecryption, getReadOnlyContract]
+    [user, requestDecryption, getEncryptedPredictionHandle, decrypt, getReadOnlyContract]
   );
 
   return {

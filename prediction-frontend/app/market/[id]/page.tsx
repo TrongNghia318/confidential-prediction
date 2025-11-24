@@ -39,7 +39,7 @@ export default function MarketDetailPage({ params }: { params: Promise<{ id: str
   useEffect(() => {
     loadMarket();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [marketId]);
+  }, [marketId, authenticated, user?.wallet?.address]);
 
   const loadMarket = async () => {
     setIsLoading(true);
@@ -148,7 +148,7 @@ export default function MarketDetailPage({ params }: { params: Promise<{ id: str
         isResolved: market?.resolved || false,
       });
       setShowDecrypted(true);
-      setSuccess('✅ Prediction decrypted successfully!');
+      setSuccess('Prediction decrypted successfully!');
 
       // Clear success message after 3 seconds
       setTimeout(() => setSuccess(''), 3000);
@@ -257,7 +257,7 @@ export default function MarketDetailPage({ params }: { params: Promise<{ id: str
 
       {success && (
         <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
-          <p className="text-sm text-green-800">✅ {success}</p>
+          <p className="text-sm text-green-800">{success}</p>
         </div>
       )}
 

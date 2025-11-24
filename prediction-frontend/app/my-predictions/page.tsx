@@ -17,6 +17,7 @@ export default function MyPredictionsPage() {
     if (authenticated && user?.wallet?.address) {
       loadMyPredictions();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [authenticated, user]);
 
   const loadMyPredictions = async () => {
@@ -105,7 +106,7 @@ export default function MyPredictionsPage() {
             No Predictions Yet
           </h3>
           <p className="text-gray-600 mb-6">
-            You haven't made any predictions yet. Browse markets and make your first prediction!
+            You have not made any predictions yet. Browse markets and make your first prediction!
           </p>
           <Link href="/markets">
             <button className="gradient-purple text-white px-6 py-3 rounded-lg hover:opacity-90 transition font-medium">

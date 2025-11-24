@@ -45,7 +45,6 @@ async function loadRelayerSDK(): Promise<void> {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       if ((window as any)[RELAYER_SDK_GLOBAL_KEY]) {
         isSDKLoaded = true;
-        console.log('✅ RelayerSDK loaded from CDN');
         resolve();
       } else {
         reject(new Error('SDK loaded but not available on window object'));
@@ -84,7 +83,7 @@ async function initializeRelayerSDK(): Promise<void> {
 
     relayerSDK.__initialized__ = true;
     isSDKInitialized = true;
-    console.log('✅ RelayerSDK initialized');
+    console.log('RelayerSDK initialized');
   } catch (error) {
     throw new Error(`RelayerSDK initialization failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
@@ -127,7 +126,6 @@ export async function initializeFhevm(): Promise<any> {
   const chainId = parseInt(process.env.NEXT_PUBLIC_CHAIN_ID || '11155111');
 
   if (fhevmInstance) {
-    console.log('✅ Using cached FHEVM instance');
     return fhevmInstance;
   }
 
@@ -150,12 +148,24 @@ export async function initializeFhevm(): Promise<any> {
     // Override network RPC URL for Sepolia
     if (chainId === 11155111) {
       sdkNetworkConfig.network = 'https://ethereum-sepolia-rpc.publicnode.com';
+
+      // Override gateway URL with environment variable or default Sepolia gateway
+      const envGatewayUrl = process.env.NEXT_PUBLIC_GATEWAY_URL;
+      if (envGatewayUrl) {
+        sdkNetworkConfig.gatewayUrl = envGatewayUrl;
+        console.log('🔧 Overriding gateway URL from environment');
+      } else {
+        // Fallback to correct Sepolia gateway
+        sdkNetworkConfig.gatewayUrl = 'https://gateway.sepolia.zama.ai';
+        console.log('🔧 Using default Sepolia gateway URL');
+      }
     }
 
     console.log('📡 SDK Network Config:');
     console.log('  - ACL Address:', sdkNetworkConfig.aclContractAddress);
     console.log('  - KMS Address:', sdkNetworkConfig.kmsContractAddress);
     console.log('  - Network RPC:', sdkNetworkConfig.network);
+    console.log('  - Gateway URL:', sdkNetworkConfig.gatewayUrl);
 
     console.log('🔨 Creating FHEVM instance...');
     const instance = await relayerSDK.createInstance(sdkNetworkConfig);
@@ -170,7 +180,6 @@ export async function initializeFhevm(): Promise<any> {
       }
     };
 
-    console.log('✅ FHEVM initialized successfully');
     return fhevmInstance;
   } catch (error) {
     console.error('❌ FHEVM initialization failed:', error);
