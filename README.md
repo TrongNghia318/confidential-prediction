@@ -1,10 +1,12 @@
-# 🔮 Confidential Prediction Market
+# Confidential Prediction Market
 
-A privacy-preserving prediction platform built with **FHEVM (Fully Homomorphic Encryption Virtual Machine)**. Users can make predictions on binary outcome events while keeping their predictions completely private using on-chain encryption. No betting or financial aspects - pure prediction tracking with cryptographic privacy.
+A privacy-preserving prediction platform built with FHEVM (Fully Homomorphic Encryption Virtual Machine). Users can make predictions on binary outcome events while keeping their predictions completely private using on-chain encryption. No betting or financial aspects - pure prediction tracking with cryptographic privacy.
 
-Author: [@Gengarthedev](https://x.com/Gengarthedev)
+**Author**: [@Gengarthedev](https://x.com/Gengarthedev)
 
 ---
+
+## Deployment Information
 
 | Contract Name | Network | Contract Address |
 |--------------|---------|------------------|
@@ -12,24 +14,40 @@ Author: [@Gengarthedev](https://x.com/Gengarthedev)
 
 ---
 
-## 📖 Concept
+## Table of Contents
+
+- [Concept](#concept)
+- [Architecture Overview](#architecture-overview)
+- [Application Flows](#application-flows)
+- [Getting Started](#getting-started)
+- [Deployment](#deployment)
+- [Contract Specifications](#contract-specifications)
+- [Development Tools](#development-tools)
+- [FHEVM v0.9 Migration](#fhevm-v09-migration)
+- [Additional Resources](#additional-resources)
+- [Contributing](#contributing)
+- [License](#license)
+
+---
+
+## Concept
 
 The Confidential Prediction Market revolutionizes prediction platforms by combining blockchain transparency with **cryptographic privacy**. Traditional prediction markets expose all predictions publicly, which can influence crowd behavior and compromise privacy. This solution leverages **homomorphic encryption** to keep predictions encrypted on-chain while still enabling verification of correctness after resolution.
 
 ### Key Features
 
-- **🔒 Private Predictions**: All predictions are encrypted using FHEVM technology
-- **❓ Binary Markets**: Simple Yes/No questions with clear outcomes
-- **🎯 Deadline-Based**: Markets have clear deadlines for making predictions
-- **✅ Resolution Tracking**: Check if you predicted correctly after market resolution
-- **⚡ Self-Relaying Decryption**: Instant decryption with cryptographic proofs (FHEVM v0.9)
-- **🔐 Zero-Knowledge**: Your predictions remain encrypted until you choose to decrypt them
-- **🚀 User-Controlled**: Users sign and submit their own decryption requests
-- **🎭 Privacy-First**: No one can see your prediction until you reveal it
+- **Private Predictions**: All predictions are encrypted using FHEVM technology
+- **Binary Markets**: Simple Yes/No questions with clear outcomes
+- **Deadline-Based**: Markets have clear deadlines for making predictions
+- **Resolution Tracking**: Check if you predicted correctly after market resolution
+- **Self-Relaying Decryption**: Instant decryption with cryptographic proofs (FHEVM v0.9)
+- **Zero-Knowledge**: Your predictions remain encrypted until you choose to decrypt them
+- **User-Controlled**: Users sign and submit their own decryption requests
+- **Privacy-First**: No one can see your prediction until you reveal it
 
 ---
 
-## 🏗️ Architecture Overview
+## Architecture Overview
 
 The platform consists of two main layers: **Smart Contracts** (on-chain logic) and **Frontend Application** (user interface with FHEVM integration).
 
@@ -59,7 +77,7 @@ The platform consists of two main layers: **Smart Contracts** (on-chain logic) a
 
 ---
 
-## 🔄 Application Flows
+## Application Flows
 
 ### 1. Market Creation Flow
 
@@ -139,86 +157,59 @@ sequenceDiagram
     UI->>Contract: getEncryptedPredictionHandle(marketId, userAddress)
     Contract-->>UI: bytes32 handle
 
-    Note over UI,SDK: Step 3: Decrypt with Proof
-    UI->>SDK: publicDecrypt([handle])
-    SDK->>SDK: Decrypt value
-    SDK->>SDK: Generate cryptographic proof
-    SDK-->>UI: {cleartext, proof}
+    Note over UI,SDK: Step 3: Decrypt with User Signature
+    UI->>SDK: userDecrypt(handle, signature)
+    SDK->>SDK: Generate keypair
+    SDK->>SDK: Request EIP712 signature
+    UI->>User: Sign decryption request
+    User-->>UI: Signature
+    SDK->>SDK: Decrypt value with signature
+    SDK-->>UI: cleartext value
 
-    Note over UI,Contract: Step 4: Submit Proof
-    UI->>Contract: submitMyPredictionDecryption(marketId, cleartext, proof)
-    Contract->>Contract: FHE.checkSignatures(handle, cleartext, proof)
-    Contract->>Contract: Cache decrypted value (10min TTL)
-    Contract->>Contract: Set status = DECRYPTED
-    Contract-->>UI: Transaction confirmed
-
-    Note over UI,Contract: Fetch Result
-    UI->>Contract: getPredictionStatus(marketId, userAddress)
-    Contract-->>UI: {status, prediction, cacheExpiry}
+    Note over UI: Display Result
     UI->>UI: Compute wasCorrect = (prediction == actualOutcome)
-    UI-->>User: Display: "You predicted YES" + correctness
+    UI-->>User: Display: "You predicted YES/NO" + correctness
 ```
 
 ### 5. Encryption & Decryption Technical Flow
 
-```mermaid
----
-config:
-  look: handDrawn
-  theme: neutral
----
+**Encryption Process:**
 
-graph TB
-    subgraph "📤 Encryption Process"
-        A[Boolean Value<br/>YES = true<br/>NO = false] --> B[FHEVM SDK<br/>createEncryptedInput]
-        B --> C[Encrypted Value<br/>ebool]
-        B --> D[Proof<br/>ZK Proof]
-        C --> E[Smart Contract<br/>Store On-Chain]
-        D --> E
-    end
+1. Boolean Value (YES = true, NO = false)
+2. FHEVM SDK creates encrypted input
+3. Generate encrypted value (ebool) + ZK Proof
+4. Submit to smart contract for on-chain storage
 
-    subgraph "📥 Self-Relaying Decryption Process v0.9"
-        F[User Request] --> G[1. Mark as Publicly<br/>Decryptable]
-        G --> H[Smart Contract<br/>FHE.makePubliclyDecryptable]
-        H --> I[2. Get Encrypted<br/>Handle]
-        I --> J[3. Relayer SDK<br/>publicDecrypt]
-        J --> K[Cleartext +<br/>Proof]
-        K --> L[4. Submit Proof<br/>to Contract]
-        L --> M[Smart Contract<br/>FHE.checkSignatures]
-        M --> N[✅ Verified<br/>Decryption]
-    end
+**User-Signature Decryption Process (v0.9):**
 
-    E -.Stored On-Chain.-> F
-
-    style A fill:#ffcccc,stroke:#333,stroke-width:2px
-    style N fill:#ccffcc,stroke:#333,stroke-width:2px
-    style E fill:#cce5ff,stroke:#333,stroke-width:2px
-    style H fill:#cce5ff,stroke:#333,stroke-width:2px
-    style J fill:#ffd700,stroke:#333,stroke-width:3px
-    style M fill:#ff9966,stroke:#333,stroke-width:2px
-```
+1. User initiates decryption request
+2. Mark encrypted value as decryptable via `FHE.makePubliclyDecryptable()`
+3. Retrieve encrypted handle from contract
+4. Generate keypair and create EIP712 signature request
+5. User signs the decryption request in wallet
+6. SDK decrypts with signature
+7. Display decrypted value to user
 
 #### Decryption Workflow Details
 
-The platform uses **FHEVM v0.9 self-relaying decryption** for secure and instant prediction decryption:
+The platform uses **FHEVM v0.9 user-signature decryption** for secure and instant prediction decryption:
 
-**4-Step Self-Relaying Process:**
+**User-Signature Process:**
 
 1. **Mark as Decryptable**: Contract marks the encrypted prediction as publicly decryptable using `FHE.makePubliclyDecryptable()`
 2. **Get Handle**: Frontend retrieves the encrypted handle from the contract via `getEncryptedPredictionHandle()`
-3. **Decrypt**: Relayer SDK's `publicDecrypt()` decrypts the value and generates a cryptographic proof
-4. **Submit Proof**: Frontend submits the cleartext and proof back to the contract for verification via `FHE.checkSignatures()`
+3. **Sign & Decrypt**: SDK generates keypair, requests user signature (EIP712), and decrypts with signature
 
-**Benefits over Oracle-based decryption:**
-- ⚡ **Instant**: No waiting for gateway callbacks (10-30 seconds)
-- 🔐 **Secure**: Cryptographic proofs prevent tampering
-- 👤 **User-controlled**: Users trigger and sign decryption requests
-- 💰 **Cost-effective**: No reliance on third-party oracle services
-- 🔒 **Privacy-preserving**: Only the user can decrypt their own prediction
+**Benefits:**
+- **Instant**: No waiting for external services
+- **Secure**: User signature required for decryption
+- **User-controlled**: Only the predictor can decrypt their prediction
+- **Cost-effective**: No reliance on third-party oracle services
+- **Privacy-preserving**: Signature-based authentication ensures only owner can decrypt
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -238,7 +229,7 @@ Ensure you have the following installed:
 #### Smart Contracts
 - **Solidity**: 0.8.24
 - **FHEVM Core Contracts**: ^0.8.0
-- **FHEVM Solidity**: ^0.9.1 (Self-relaying decryption)
+- **FHEVM Solidity**: ^0.9.1 (User-signature decryption)
 - **FHEVM Hardhat Plugin**: ^0.3.0-1
 - **Hardhat**: Development environment
 - **TypeChain**: Type-safe contract interactions
@@ -326,9 +317,20 @@ npm test
 npx hardhat test test/ConfidentialPrediction.test.ts
 ```
 
-### Deployment
+#### Run Frontend Development Server
 
-#### Deploy to Sepolia Testnet
+```bash
+cd prediction-frontend
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+---
+
+## Deployment
+
+### Deploy to Sepolia Testnet
 
 **Option 1: Using Hardhat Vars (Recommended)**
 
@@ -352,12 +354,12 @@ npx hardhat verify --network sepolia <CONTRACT_ADDRESS>
 
 The deployment script will output:
 ```
-✅ ConfidentialPrediction deployed to: 0x...
+ConfidentialPrediction deployed to: 0x...
 ```
 
 Update this address in `prediction-frontend/.env.local`.
 
-#### Production Build
+### Production Build
 
 ```bash
 cd prediction-frontend
@@ -367,7 +369,7 @@ npm start
 
 ---
 
-## 📋 Deployed Contract Details
+## Contract Specifications
 
 ### Contract Address (Sepolia Testnet)
 
@@ -378,15 +380,13 @@ NEXT_PUBLIC_CONTRACT_ADDRESS=0x7407B9C63793546d97CD41A23bf4C461CC0ADC95
 NEXT_PUBLIC_CHAIN_ID=11155111
 ```
 
-### Contract Specifications
-
-#### ConfidentialPrediction.sol
+### ConfidentialPrediction.sol
 
 **Address**: `0x7407B9C63793546d97CD41A23bf4C461CC0ADC95`
 
 **Purpose**: Privacy-preserving prediction market contract
 
-**Key Functions**:
+#### Key Functions
 
 | Function | Parameters | Description | Access |
 |----------|-----------|-------------|--------|
@@ -394,20 +394,21 @@ NEXT_PUBLIC_CHAIN_ID=11155111
 | `predict` | `marketId`, `encryptedPrediction`, `proof` | Make encrypted prediction | Public |
 | `resolveMarket` | `marketId`, `outcome` | Resolve market with actual outcome | Creator only |
 | `cancelMarket` | `marketId` | Cancel unresolved market | Creator only |
-| `requestMyPredictionDecryption` | `marketId` | Mark prediction as decryptable (Step 1) | Predictor |
-| `submitMyPredictionDecryption` | `marketId`, `cleartext`, `proof` | Submit decryption proof (Step 4) | Predictor |
+| `requestMyPredictionDecryption` | `marketId` | Mark prediction as decryptable | Predictor |
 | `getMarket` | `marketId` | Get market details | Public (read) |
-| `getPredictionStatus` | `marketId`, `user` | Get decryption status + cached value | Public (read) |
+| `getPredictionStatus` | `marketId`, `user` | Get decryption status | Public (read) |
 | `getEncryptedPredictionHandle` | `marketId`, `user` | Get encrypted handle for decryption | Public (read) |
 | `checkHasPrediction` | `marketId`, `user` | Check if user made prediction | Public (read) |
 
-**Events**:
+#### Events
+
 - `MarketCreated(uint16 marketId, address creator, string question, uint256 deadline)`
 - `PredictionMade(uint16 marketId, address predictor)`
 - `MarketResolved(uint16 marketId, Outcome outcome)`
 - `MarketCancelled(uint16 marketId)`
 
-**Enums**:
+#### Enums
+
 ```solidity
 enum Outcome {
     PENDING,    // 0 - Not resolved yet
@@ -419,18 +420,19 @@ enum Outcome {
 enum DecryptStatus {
     IDLE,       // 0 - Not started
     PROCESSING, // 1 - Marked as decryptable
-    DECRYPTED   // 2 - Decrypted and cached
+    DECRYPTED   // 2 - Decrypted (legacy, not used in signature flow)
 }
 ```
 
-**Storage**:
+#### Storage
+
 - `Market[] public markets` - Array of all markets
 - `mapping(uint16 => mapping(address => ebool)) encryptedPredictions` - Encrypted predictions
 - `mapping(uint16 => mapping(address => bool)) hasPrediction` - Prediction existence tracker
-- `mapping(uint16 => mapping(address => BoolResultWithExp)) decryptedPredictions` - Cached decrypted values
 - `mapping(uint16 => mapping(address => DecryptStatus)) decryptPredictionStatus` - Decryption status
 
-**Market Struct**:
+#### Market Struct
+
 ```solidity
 struct Market {
     address creator;
@@ -472,13 +474,12 @@ struct Market {
 - **Input Validation**: Comprehensive checks on all parameters
 - **State Machine**: Market lifecycle enforced by state checks
 - **Duplicate Prevention**: Users cannot predict twice on the same market
-- **Cache Expiration**: 10-minute timeout on decrypted values
-- **Cryptographic Proofs**: `FHE.checkSignatures()` validates all decryptions
+- **Signature-Based Decryption**: Only the predictor can decrypt their prediction with their signature
 - **Deadline Enforcement**: Predictions blocked after deadline, resolution allowed only after
 
 ---
 
-## 🛠️ Development Tools
+## Development Tools
 
 ### Flatten Contracts for Verification
 
@@ -502,25 +503,35 @@ const count = await contract.marketCount();
 console.log("Total markets:", count.toString());
 ```
 
+### Quick Demo Market Script
+
+Create a short-duration market for demo videos:
+
+```bash
+# Create a 3-minute market (default)
+npx hardhat run create-demo-market.js --network sepolia
+
+# Create a 5-minute market with custom question
+DURATION_MINUTES=5 QUESTION="Will BTC reach $100k?" npx hardhat run create-demo-market.js --network sepolia
+```
+
 ---
 
-## 🔄 FHEVM v0.9 Migration
+## FHEVM v0.9 Migration
 
-This project has been upgraded to **FHEVM v0.9** with self-relaying decryption. Key changes include:
+This project uses **FHEVM v0.9** with user-signature based decryption.
 
 ### Smart Contract Changes
 
 **Removed (Deprecated):**
 - `FHE.requestDecryption()` - Oracle-based decryption
-- Oracle callback functions - Replaced with submit functions
+- Oracle callback functions
+- Proof submission methods
 
-**Added (Self-Relaying):**
-- `FHE.makePubliclyDecryptable()` - Marks values for public decryption
-- `FHE.checkSignatures()` - Verifies decryption proofs (new v0.9 signature)
+**Added (User-Signature):**
+- `FHE.makePubliclyDecryptable()` - Marks values for decryption
 - `requestMyPredictionDecryption()` - Mark prediction as decryptable
-- `submitMyPredictionDecryption()` - Submit cleartext + proof for verification
 - `getEncryptedPredictionHandle()` - Get handle for SDK decryption
-- `ZamaEthereumConfig` inheritance - Provides ACL/KMS addresses for Sepolia
 
 ### Frontend Changes
 
@@ -538,33 +549,29 @@ await requestMyPredictionDecryption(marketId);
 // 2. Get encrypted handle
 const handle = await getEncryptedPredictionHandle(marketId, userAddress);
 
-// 3. Decrypt with proof generation
-const { cleartext, proof } = await instance.publicDecrypt([handle]);
+// 3. Decrypt with user signature
+const cleartext = await decrypt(handle, contractAddress);
 
-// 4. Submit proof to contract
-await submitMyPredictionDecryption(marketId, cleartextBool, proof);
-
-// 5. Read cached result
-const [status, prediction, cacheExpiry] = await getPredictionStatus(marketId, userAddress);
+// 4. Display result
+console.log("Your prediction:", cleartext ? "YES" : "NO");
 ```
 
 **Benefits:**
-- ⚡ **10-30x faster** - No waiting for gateway callbacks
-- 🔐 **More secure** - User-controlled decryption with cryptographic proofs
-- 💰 **Lower cost** - No oracle transaction fees
-- 🎯 **Better UX** - Instant feedback for users
+- **Instant decryption** - No waiting for external services
+- **More secure** - User signature required
+- **Better UX** - Immediate feedback for users
+- **Privacy-preserving** - Only predictor can decrypt with their signature
 
 ### Key Migration Points
 
 1. **Contract must inherit `ZamaEthereumConfig`** - Provides ACL/KMS addresses
-2. **Use `getPredictionStatus(marketId, user)`** instead of `getMyPrediction()` - Works with read-only providers
-3. **Complete 4-step workflow** - Don't skip steps or the decryption will fail
-4. **Handle PROCESSING state** - If decryption was started but not completed, skip step 1
-5. **Cache awareness** - Cached values expire after 10 minutes
+2. **Use signature-based decryption** - Requires user to sign EIP712 message
+3. **Handle PROCESSING state** - If decryption was started but not completed
+4. **Simplified workflow** - No proof submission needed (handled by SDK)
 
 ---
 
-## 📚 Additional Resources
+## Additional Resources
 
 - **FHEVM Documentation**: https://docs.zama.org/protocol
 - **FHEVM v0.9 Migration Guide**: https://docs.zama.org/protocol/solidity-guides/development-guide/migration
@@ -576,7 +583,7 @@ const [status, prediction, cacheExpiry] = await getPredictionStatus(marketId, us
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! Please follow these steps:
 
@@ -588,13 +595,13 @@ Contributions are welcome! Please follow these steps:
 
 ---
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License. See LICENSE file for details.
 
 ---
 
-## 🔒 Privacy & Security Notice
+## Privacy & Security Notice
 
 This platform uses **FHEVM (Fully Homomorphic Encryption)** to ensure:
 - Predictions are **never** visible on-chain in plaintext
@@ -604,14 +611,14 @@ This platform uses **FHEVM (Fully Homomorphic Encryption)** to ensure:
 - No third party (including contract owner) can see your prediction
 
 **Use Cases:**
-- 🎯 Unbiased prediction tracking without crowd influence
-- 📊 Private opinion polling
-- 🔬 Research studies requiring prediction privacy
-- 🎮 Gaming and entertainment without spoilers
-- 📈 Market sentiment analysis with privacy
+- Unbiased prediction tracking without crowd influence
+- Private opinion polling
+- Research studies requiring prediction privacy
+- Gaming and entertainment without spoilers
+- Market sentiment analysis with privacy
 
 **Security Audits**: This is an educational project. Use at your own risk.
 
 ---
 
-Built with ❤️ by [@Gengarthedev](https://x.com/Gengarthedev) using Zama's FHEVM technology
+**Author**: [@Gengarthedev](https://x.com/Gengarthedev) | **Technology**: Zama FHEVM
